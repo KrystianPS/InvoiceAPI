@@ -19,15 +19,30 @@ namespace InvoiceAPI.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
+        public IEnumerable<WeatherForecast> Get(int scope, int maxTemp, int minTemp)
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            var rng = new Random();
+            return Enumerable.Range(1, scope).Select(index => new WeatherForecast
             {
                 Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
+                TemperatureC = Random.Shared.Next(minTemp, maxTemp),
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
         }
+
+        [HttpPost("generate")]
+        public ActionResult<IEnumerable<WeatherForecast>> Generate([FromQuery] int scope, [FromQuery] int maxTemp, [FromQuery] int minTemp)
+        {
+
+            if (scope < 0 || maxTemp < minTemp)
+            {
+                return BadRequest();
+            }
+            var result = Get(scope, maxTemp, minTemp);
+            return Ok(result);
+        }
+
+
     }
 }

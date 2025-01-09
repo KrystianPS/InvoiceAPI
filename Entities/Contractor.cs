@@ -10,5 +10,6 @@
 
 
         public List<Company> Companies { get; set; } = new List<Company>();
+        public List<Invoice> Invoices { get; set; } = new List<Invoice>();
     }
 }

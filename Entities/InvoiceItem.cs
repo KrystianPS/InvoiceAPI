@@ -10,6 +10,8 @@
 
         public int Quantity { get; set; }
         public decimal ItemPriceNet { get; set; }
+
+        public decimal VatRate { get; set; }
         public decimal ItemVatAmount { get; set; }
         public decimal ItemPriceGross { get; set; }
     }

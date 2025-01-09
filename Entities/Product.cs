@@ -8,13 +8,8 @@
 
 
         public required decimal UnitPriceNet { get; set; }
-        public required VatRate VatRate { get; set; }
-        public required int VarRateId { get; set; }
-        public decimal VatAmount { get; set; }
-        public decimal UnitPriceGross { get; set; }
-
         public ProductCategory ProductCategory { get; set; }
         public int ProductCategoryId { get; set; }
-
+        public List<InvoiceItem> InvoiceItems { get; set; } = new List<InvoiceItem>();
     }
 }

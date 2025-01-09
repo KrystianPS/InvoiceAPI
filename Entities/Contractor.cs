@@ -8,5 +8,7 @@
         public ContractorAddressDetails? AddressDetails { get; set; }
         public ContractorContactDetails? ContactDetails { get; set; }
 
+
+        public Company Company { get; set; }
     }
 }

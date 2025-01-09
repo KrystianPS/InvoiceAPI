@@ -1,0 +1,21 @@
+﻿namespace InvoiceAPI.Entities
+{
+    public class Invoice
+    {
+        public int Id { get; set; }
+        public required string InoiceNumber { get; set; }
+        public required int CompanyId { get; set; }
+        public Company Company { get; set; }
+        public required int ContractorId { get; set; }
+        public Contractor Contractor { get; set; }
+        public List<InvoiceItem> InvoiceItems { get; set; } = new List<InvoiceItem>();
+        public int InvoiceItemsCount { get; set; }
+        public DateTime IssueDate { get; set; }
+        public DateTime DueDate { get; set; }
+
+        public decimal TotalNet { get; set; }
+        public decimal TotalVatAmount { get; set; }
+        public decimal TotalGross { get; set; }
+        public string InvoiceNote { get; set; }
+    }
+}

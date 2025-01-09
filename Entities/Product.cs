@@ -13,5 +13,8 @@
         public decimal VatAmount { get; set; }
         public decimal UnitPriceGross { get; set; }
 
+        public ProductCategory ProductCategory { get; set; }
+        public int ProductCategoryId { get; set; }
+
     }
 }

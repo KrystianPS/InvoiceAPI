@@ -8,5 +8,7 @@
         public ContractorAddressDetails? AddressDetails { get; set; }
         public ContractorContactDetails? ContactDetails { get; set; }
 
+
+        public List<Company> Companies { get; set; } = new List<Company>();
     }
 }

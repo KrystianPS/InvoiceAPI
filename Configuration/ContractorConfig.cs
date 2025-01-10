@@ -17,7 +17,10 @@ namespace InvoiceAPI.Configuration
                 .HasForeignKey<ContractorContactDetails>(cd => cd.Id);
 
             eb.Property(c => c.Name).HasColumnType("varchar(200)");
+            eb.HasIndex(c => c.Name).HasDatabaseName("IX_Contractors_Name");
+
             eb.Property(c => c.TIN).HasColumnType("varchar(10)");
+
 
 
         }

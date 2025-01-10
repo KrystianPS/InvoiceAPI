@@ -13,9 +13,19 @@ namespace InvoiceAPI.Configuration
                 .HasForeignKey(p => p.ProductCategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            eb.Property(p => p.UnitPriceNet).HasColumnType("decimal(18,2)");
-            eb.Property(p => p.Name).HasColumnType("varchar(30)");
-            eb.Property(p => p.Description).HasColumnType("varchar(200)");
+            eb.HasOne(p => p.Company)
+                .WithMany(c => c.Products)
+                .HasForeignKey(p => p.CompanyId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
+
+            eb.Property(p => p.Name).IsRequired().HasMaxLength(30).HasColumnType("varchar(30)");
+            eb.HasIndex(p => p.Name).HasDatabaseName("IX_Products_Name");
+
+            eb.Property(p => p.UnitPriceNet).IsRequired().HasColumnType("decimal(18,2)");
+
+            eb.Property(p => p.Description).HasMaxLength(200).HasColumnType("varchar(200)");
         }
     }
 }

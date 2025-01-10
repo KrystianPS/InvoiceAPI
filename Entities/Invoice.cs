@@ -6,9 +6,6 @@
         public required string InvoiceNumber { get; set; }
         public DateTime IssueDate { get; set; }
         public DateTime DueDate { get; set; }
-
-        public VatRate VatRate { get; set; }
-        public int VatId { get; set; }
         public decimal TotalNet { get; set; }
         public decimal TotalVatAmount { get; set; }
         public decimal TotalGross { get; set; }

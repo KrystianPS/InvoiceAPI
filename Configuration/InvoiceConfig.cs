@@ -22,12 +22,15 @@ namespace InvoiceAPI.Configuration
             eb.HasMany(i => i.InvoiceItems)
                 .WithOne(ii => ii.Invoice)
                 .HasForeignKey(i => i.InvoiceId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.Cascade);
 
             eb.Property(i => i.TotalGross).HasColumnType("decimal(18,2)");
             eb.Property(i => i.TotalNet).HasColumnType("decimal(18,2)");
             eb.Property(i => i.TotalVatAmount).HasColumnType("decimal(18,2)");
             eb.Property(i => i.InvoiceNote).HasColumnType("varchar(200)");
+
+
+            eb.HasIndex(i => i.InvoiceNumber).HasDatabaseName("IX_Invoices_InvoiceNumber");
 
 
         }

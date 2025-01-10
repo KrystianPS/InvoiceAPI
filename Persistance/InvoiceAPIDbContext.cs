@@ -16,7 +16,7 @@ namespace InvoiceAPI.Persistance
         public DbSet<CompanyContactDetails> CompaniesContactDetails { get; set; }
 
         public DbSet<Contractor> Contractors { get; set; }
-        public DbSet<ContractorAddressDetails> ComtractorsAddressDetails { get; set; }
+        public DbSet<ContractorAddressDetails> ContractorsAddressDetails { get; set; }
         public DbSet<ContractorContactDetails> ContractorsContactDetails { get; set; }
 
         public DbSet<Invoice> Invoices { get; set; }

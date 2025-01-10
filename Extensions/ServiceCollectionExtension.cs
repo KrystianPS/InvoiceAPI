@@ -1,4 +1,6 @@
 ﻿using InvoiceAPI.Persistance;
+using InvoiceAPI.Seeders;
+using InvoiceAPI.Seeders.EntitySeeders;
 using Microsoft.EntityFrameworkCore;
 
 namespace InvoiceAPI.Extensions
@@ -11,6 +13,8 @@ namespace InvoiceAPI.Extensions
                 configuration.GetConnectionString("LocalDBDevelopmentConnectionString")));
 
 
+            services.AddScoped<DatabaseSeeder>();
+            services.AddScoped<VatRateSeeder>();
 
         }
 

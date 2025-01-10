@@ -31,5 +31,28 @@ namespace InvoiceAPI.Seeders.EntitySeeders
                 }
             }
         }
+        private IEnumerable<VatRate> GetVatRates()
+        {
+            var rates = new List<VatRate>()
+            {
+                new VatRate()
+                {
+                    Rate = 0.23m
+                },
+                new VatRate()
+                {
+                    Rate = 0.08m
+                },
+                new VatRate()
+                {
+                    Rate = 0.05m
+                },
+                new VatRate()
+                {
+                    Rate = 0m
+                }
+            };
+            return rates;
+        }
     }
 }

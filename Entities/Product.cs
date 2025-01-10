@@ -10,6 +10,7 @@
         public required decimal UnitPriceNet { get; set; }
         public ProductCategory ProductCategory { get; set; }
         public int ProductCategoryId { get; set; }
+        public string ProductCategoryName { get; set; }
         public List<InvoiceItem> InvoiceItems { get; set; } = new List<InvoiceItem>();
     }
 }

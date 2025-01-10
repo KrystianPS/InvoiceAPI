@@ -34,7 +34,7 @@ namespace InvoiceAPI.Migrations
 
                     b.HasIndex("ContractorsId");
 
-                    b.ToTable("CompanyContractor");
+                    b.ToTable("CompanyContractor", (string)null);
                 });
 
             modelBuilder.Entity("InvoiceAPI.Entities.Company", b =>
@@ -54,7 +54,7 @@ namespace InvoiceAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Companies");
+                    b.ToTable("Companies", (string)null);
                 });
 
             modelBuilder.Entity("InvoiceAPI.Entities.CompanyAddressDetails", b =>
@@ -83,7 +83,7 @@ namespace InvoiceAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CompaniesAddressDetails");
+                    b.ToTable("CompaniesAddressDetails", (string)null);
                 });
 
             modelBuilder.Entity("InvoiceAPI.Entities.CompanyContactDetails", b =>
@@ -101,7 +101,7 @@ namespace InvoiceAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CompaniesContactDetails");
+                    b.ToTable("CompaniesContactDetails", (string)null);
                 });
 
             modelBuilder.Entity("InvoiceAPI.Entities.Contractor", b =>
@@ -124,7 +124,7 @@ namespace InvoiceAPI.Migrations
                     b.HasIndex("Name")
                         .HasDatabaseName("IX_Contractors_Name");
 
-                    b.ToTable("Contractors");
+                    b.ToTable("Contractors", (string)null);
                 });
 
             modelBuilder.Entity("InvoiceAPI.Entities.ContractorAddressDetails", b =>
@@ -149,7 +149,7 @@ namespace InvoiceAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ContractorsAddressDetails");
+                    b.ToTable("ContractorsAddressDetails", (string)null);
                 });
 
             modelBuilder.Entity("InvoiceAPI.Entities.ContractorContactDetails", b =>
@@ -165,7 +165,7 @@ namespace InvoiceAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ContractorsContactDetails");
+                    b.ToTable("ContractorsContactDetails", (string)null);
                 });
 
             modelBuilder.Entity("InvoiceAPI.Entities.Invoice", b =>
@@ -214,7 +214,7 @@ namespace InvoiceAPI.Migrations
                     b.HasIndex("InvoiceNumber")
                         .HasDatabaseName("IX_Invoices_InvoiceNumber");
 
-                    b.ToTable("Invoices");
+                    b.ToTable("Invoices", (string)null);
                 });
 
             modelBuilder.Entity("InvoiceAPI.Entities.InvoiceItem", b =>
@@ -252,7 +252,7 @@ namespace InvoiceAPI.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("InvoiceItems");
+                    b.ToTable("InvoiceItems", (string)null);
                 });
 
             modelBuilder.Entity("InvoiceAPI.Entities.Product", b =>
@@ -294,7 +294,7 @@ namespace InvoiceAPI.Migrations
 
                     b.HasIndex("ProductCategoryId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("InvoiceAPI.Entities.ProductCategory", b =>
@@ -311,7 +311,7 @@ namespace InvoiceAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductCategory");
+                    b.ToTable("ProductCategory", (string)null);
                 });
 
             modelBuilder.Entity("InvoiceAPI.Entities.VatRate", b =>
@@ -327,7 +327,7 @@ namespace InvoiceAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("VatRates");
+                    b.ToTable("VatRates", (string)null);
                 });
 
             modelBuilder.Entity("CompanyContractor", b =>

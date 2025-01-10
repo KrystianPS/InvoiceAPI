@@ -131,7 +131,7 @@ namespace InvoiceAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ComtractorsAddressDetails",
+                name: "ContractorsAddressDetails",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false),
@@ -143,9 +143,9 @@ namespace InvoiceAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ComtractorsAddressDetails", x => x.Id);
+                    table.PrimaryKey("PK_ContractorsAddressDetails", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ComtractorsAddressDetails_Contractors_Id",
+                        name: "FK_ContractorsAddressDetails_Contractors_Id",
                         column: x => x.Id,
                         principalTable: "Contractors",
                         principalColumn: "Id",
@@ -172,45 +172,14 @@ namespace InvoiceAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Products",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "varchar(30)", nullable: false),
-                    Description = table.Column<string>(type: "varchar(200)", nullable: true),
-                    UnitPriceNet = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    ProductCategoryId = table.Column<int>(type: "int", nullable: false),
-                    ProductCategoryName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CompanyId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Products", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Products_Companies_CompanyId",
-                        column: x => x.CompanyId,
-                        principalTable: "Companies",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Products_ProductCategory_ProductCategoryId",
-                        column: x => x.ProductCategoryId,
-                        principalTable: "ProductCategory",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Invoices",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    InvoiceNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    InvoiceNumber = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     IssueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    VatRateId = table.Column<int>(type: "int", nullable: false),
-                    VatId = table.Column<int>(type: "int", nullable: false),
                     TotalNet = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     TotalVatAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     TotalGross = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
@@ -232,12 +201,36 @@ namespace InvoiceAPI.Migrations
                         column: x => x.ContractorId,
                         principalTable: "Contractors",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Products",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: false),
+                    Description = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: true),
+                    CompanyId = table.Column<int>(type: "int", nullable: false),
+                    UnitPriceNet = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ProductCategoryId = table.Column<int>(type: "int", nullable: false),
+                    ProductCategoryName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Products", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Invoices_VatRates_VatRateId",
-                        column: x => x.VatRateId,
-                        principalTable: "VatRates",
+                        name: "FK_Products_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Products_ProductCategory_ProductCategoryId",
+                        column: x => x.ProductCategoryId,
+                        principalTable: "ProductCategory",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -249,10 +242,10 @@ namespace InvoiceAPI.Migrations
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     InvoiceId = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
-                    ItemPriceNet = table.Column<decimal>(type: "decimal(18,2", nullable: false),
-                    VatRate = table.Column<decimal>(type: "decimal(5,2", nullable: false),
-                    ItemVatAmount = table.Column<decimal>(type: "decimal(18,2", nullable: false),
-                    ItemPriceGross = table.Column<decimal>(type: "decimal(18,2", nullable: false)
+                    ItemPriceNet = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    VatRate = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
+                    ItemVatAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ItemPriceGross = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -262,19 +255,24 @@ namespace InvoiceAPI.Migrations
                         column: x => x.InvoiceId,
                         principalTable: "Invoices",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_InvoiceItems_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_CompanyContractor_ContractorsId",
                 table: "CompanyContractor",
                 column: "ContractorsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Contractors_Name",
+                table: "Contractors",
+                column: "Name");
 
             migrationBuilder.CreateIndex(
                 name: "IX_InvoiceItems_InvoiceId",
@@ -297,14 +295,19 @@ namespace InvoiceAPI.Migrations
                 column: "ContractorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Invoices_VatRateId",
+                name: "IX_Invoices_InvoiceNumber",
                 table: "Invoices",
-                column: "VatRateId");
+                column: "InvoiceNumber");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_CompanyId",
                 table: "Products",
                 column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_Name",
+                table: "Products",
+                column: "Name");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_ProductCategoryId",
@@ -325,13 +328,16 @@ namespace InvoiceAPI.Migrations
                 name: "CompanyContractor");
 
             migrationBuilder.DropTable(
-                name: "ComtractorsAddressDetails");
+                name: "ContractorsAddressDetails");
 
             migrationBuilder.DropTable(
                 name: "ContractorsContactDetails");
 
             migrationBuilder.DropTable(
                 name: "InvoiceItems");
+
+            migrationBuilder.DropTable(
+                name: "VatRates");
 
             migrationBuilder.DropTable(
                 name: "Invoices");
@@ -341,9 +347,6 @@ namespace InvoiceAPI.Migrations
 
             migrationBuilder.DropTable(
                 name: "Contractors");
-
-            migrationBuilder.DropTable(
-                name: "VatRates");
 
             migrationBuilder.DropTable(
                 name: "Companies");

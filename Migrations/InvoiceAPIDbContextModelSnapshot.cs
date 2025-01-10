@@ -121,6 +121,9 @@ namespace InvoiceAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .HasDatabaseName("IX_Contractors_Name");
+
                     b.ToTable("Contractors");
                 });
 
@@ -146,7 +149,7 @@ namespace InvoiceAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ComtractorsAddressDetails");
+                    b.ToTable("ContractorsAddressDetails");
                 });
 
             modelBuilder.Entity("InvoiceAPI.Entities.ContractorContactDetails", b =>
@@ -188,7 +191,7 @@ namespace InvoiceAPI.Migrations
 
                     b.Property<string>("InvoiceNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("IssueDate")
                         .HasColumnType("datetime2");
@@ -202,19 +205,14 @@ namespace InvoiceAPI.Migrations
                     b.Property<decimal>("TotalVatAmount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("VatId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("VatRateId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
 
                     b.HasIndex("ContractorId");
 
-                    b.HasIndex("VatRateId");
+                    b.HasIndex("InvoiceNumber")
+                        .HasDatabaseName("IX_Invoices_InvoiceNumber");
 
                     b.ToTable("Invoices");
                 });
@@ -231,13 +229,13 @@ namespace InvoiceAPI.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("ItemPriceGross")
-                        .HasColumnType("decimal(18,2");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("ItemPriceNet")
-                        .HasColumnType("decimal(18,2");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("ItemVatAmount")
-                        .HasColumnType("decimal(18,2");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
@@ -246,7 +244,7 @@ namespace InvoiceAPI.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("VatRate")
-                        .HasColumnType("decimal(5,2");
+                        .HasColumnType("decimal(5,2)");
 
                     b.HasKey("Id");
 
@@ -265,14 +263,16 @@ namespace InvoiceAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CompanyId")
+                    b.Property<int>("CompanyId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
+                        .HasMaxLength(200)
                         .HasColumnType("varchar(200)");
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(30)
                         .HasColumnType("varchar(30)");
 
                     b.Property<int>("ProductCategoryId")
@@ -288,6 +288,9 @@ namespace InvoiceAPI.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
+
+                    b.HasIndex("Name")
+                        .HasDatabaseName("IX_Products_Name");
 
                     b.HasIndex("ProductCategoryId");
 
@@ -400,17 +403,9 @@ namespace InvoiceAPI.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("InvoiceAPI.Entities.VatRate", "VatRate")
-                        .WithMany()
-                        .HasForeignKey("VatRateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Company");
 
                     b.Navigation("Contractor");
-
-                    b.Navigation("VatRate");
                 });
 
             modelBuilder.Entity("InvoiceAPI.Entities.InvoiceItem", b =>
@@ -418,13 +413,13 @@ namespace InvoiceAPI.Migrations
                     b.HasOne("InvoiceAPI.Entities.Invoice", "Invoice")
                         .WithMany("InvoiceItems")
                         .HasForeignKey("InvoiceId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("InvoiceAPI.Entities.Product", "Product")
                         .WithMany("InvoiceItems")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Invoice");
@@ -434,15 +429,19 @@ namespace InvoiceAPI.Migrations
 
             modelBuilder.Entity("InvoiceAPI.Entities.Product", b =>
                 {
-                    b.HasOne("InvoiceAPI.Entities.Company", null)
+                    b.HasOne("InvoiceAPI.Entities.Company", "Company")
                         .WithMany("Products")
-                        .HasForeignKey("CompanyId");
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("InvoiceAPI.Entities.ProductCategory", "ProductCategory")
                         .WithMany("Products")
                         .HasForeignKey("ProductCategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Company");
 
                     b.Navigation("ProductCategory");
                 });

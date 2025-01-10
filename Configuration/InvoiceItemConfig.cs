@@ -14,11 +14,10 @@ namespace InvoiceAPI.Configuration
             eb.Property(ii => ii.ItemPriceNet).HasColumnType("decimal(18,2)");
             eb.Property(ii => ii.ItemVatAmount).HasColumnType("decimal(18,2)");
 
-
             eb.HasOne(ii => ii.Product)
-                .WithMany(p => p.InvoiceItems)
-                .HasForeignKey(ii => ii.ProductId)
-                .OnDelete(DeleteBehavior.Restrict);
+                       .WithMany(P => P.InvoiceItems)
+                       .HasForeignKey(ii => ii.ProductId)
+                       .OnDelete(DeleteBehavior.Restrict);
 
 
 

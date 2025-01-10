@@ -20,9 +20,9 @@ namespace InvoiceAPI.Configuration
               .OnDelete(DeleteBehavior.NoAction);
 
             eb.HasMany(i => i.InvoiceItems)
-                .WithOne(ii => ii.Invoice)
-                .HasForeignKey(i => i.InvoiceId)
-                .OnDelete(DeleteBehavior.Cascade);
+               .WithOne(ii => ii.Invoice)
+               .HasForeignKey(ii => ii.InvoiceId)
+               .OnDelete(DeleteBehavior.Cascade);
 
             eb.Property(i => i.TotalGross).HasColumnType("decimal(18,2)");
             eb.Property(i => i.TotalNet).HasColumnType("decimal(18,2)");

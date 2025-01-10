@@ -4,6 +4,7 @@ using InvoiceAPI.Persistance;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InvoiceAPI.Migrations
 {
     [DbContext(typeof(InvoiceAPIDbContext))]
-    partial class InvoiceAPIDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250110055346_InvoiceItemConfigUpdate")]
+    partial class InvoiceItemConfigUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -240,6 +243,9 @@ namespace InvoiceAPI.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ProductId1")
+                        .HasColumnType("int");
+
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
@@ -251,6 +257,8 @@ namespace InvoiceAPI.Migrations
                     b.HasIndex("InvoiceId");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("ProductId1");
 
                     b.ToTable("InvoiceItems");
                 });
@@ -417,10 +425,14 @@ namespace InvoiceAPI.Migrations
                         .IsRequired();
 
                     b.HasOne("InvoiceAPI.Entities.Product", "Product")
-                        .WithMany("InvoiceItems")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("InvoiceAPI.Entities.Product", null)
+                        .WithMany("InvoiceItems")
+                        .HasForeignKey("ProductId1");
 
                     b.Navigation("Invoice");
 

@@ -12,7 +12,9 @@ namespace InvoiceAPI.MappingProfiles
                 .ForMember(m => m.AddresLine1, c => c.MapFrom(s => s.Address.AddressLine1))
                 .ForMember(m => m.AddresLine2, c => c.MapFrom(s => s.Address.AddressLine2))
                 .ForMember(m => m.PostalCode, c => c.MapFrom(s => s.Address.PostalCode))
-                .ForMember(m => m.City, c => c.MapFrom(s => s.Address.City));
+                .ForMember(m => m.City, c => c.MapFrom(s => s.Address.City))
+                .ForMember(m => m.CompanyId, c => c.MapFrom(s => s.Company.Id));
+
 
 
 

@@ -12,6 +12,6 @@
         public string? AddresLine2 { get; set; }
         public string? PostalCode { get; set; }
 
-        public int MyProperty { get; set; }
+        public List<CompanyDto> Companies { get; set; }
     }
 }

@@ -40,6 +40,7 @@ namespace InvoiceAPI.Controllers
                 .Companies
                 .Include(r => r.Address)
                 .Include(r => r.Contact)
+                .Include(r => r.Contractors)
                 .FirstOrDefault(c => c.Id == id);
 
             if (company is null)

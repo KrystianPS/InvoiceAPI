@@ -1,5 +1,4 @@
-﻿using InvoiceAPI.Models;
-using InvoiceAPI.Persistance;
+﻿using InvoiceAPI.Persistance;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InvoiceAPI.Controllers
@@ -12,12 +11,12 @@ namespace InvoiceAPI.Controllers
         {
             _dbContext = dbContext;
         }
-        public ActionResult<List<ProductDto>> GetAll()
-        {
-            var contractors = _dbContext.Products.ToList();
+        //public ActionResult<List<ProductDto>> GetAll()
+        //{
+        //    var contractors = _dbContext.Products.ToList();
 
-            return Ok(contractors);
-        }
+        //    return Ok(contractors);
+        //}
 
     }
 }

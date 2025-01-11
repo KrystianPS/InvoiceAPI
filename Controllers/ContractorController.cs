@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace InvoiceAPI.Controllers
 {
 
-    [Route("/contractor")]
+    [Route("/contractor/all")]
     public class ContractorController : ControllerBase
     {
         private readonly InvoiceAPIDbContext _dbContext;
@@ -23,7 +23,6 @@ namespace InvoiceAPI.Controllers
                 .Contractors
                 .Include(r => r.Address)
                 .Include(r => r.Contact)
-                .Include(r => r.Companies)
                 .ToList();
 
             return Ok(contractors);
@@ -36,7 +35,6 @@ namespace InvoiceAPI.Controllers
                 .Contractors
                 .Include(r => r.Address)
                 .Include(r => r.Contact)
-                .Include(r => r.Companies)
                 .FirstOrDefault(c => c.Id == id);
 
             if (contractor is null)

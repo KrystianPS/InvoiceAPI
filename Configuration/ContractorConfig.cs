@@ -16,6 +16,10 @@ namespace InvoiceAPI.Configuration
                 .WithOne(c => c.Contractor)
                 .HasForeignKey<ContractorContactDetails>(cd => cd.Id);
 
+            eb.HasOne(con => con.Company)
+                .WithMany(c => c.Contractors)
+                .HasForeignKey(con => con.CompanyId);
+
             eb.Property(c => c.Name).HasColumnType("varchar(200)");
             eb.HasIndex(c => c.Name).HasDatabaseName("IX_Contractors_Name");
 

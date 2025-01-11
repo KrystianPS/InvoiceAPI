@@ -28,8 +28,8 @@ namespace InvoiceAPI.Seeders
             {
 
                 await _vatRateSeeder.Seed();
-                await _companySeeder.Seed();
-                await _contractorSeeder.Seed();
+                var seededCompany = await _companySeeder.Seed();
+                await _contractorSeeder.Seed(seededCompany);
 
 
             }

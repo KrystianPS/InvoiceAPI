@@ -11,7 +11,7 @@ namespace InvoiceAPI.Seeders.EntitySeeders
             _dbContext = dbContext;
         }
 
-        public async Task Seed()
+        public async Task Seed(Company seededCompany)
         {
             if (_dbContext.Database.CanConnect())
             {
@@ -22,6 +22,7 @@ namespace InvoiceAPI.Seeders.EntitySeeders
                     {
                         Name = "ContractorTest1",
                         TIN = 1111111111,
+                        CompanyId = 1,
                         Address = new()
                         {
                             AddressLine1 = "Street Test1",

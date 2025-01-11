@@ -22,12 +22,12 @@ namespace InvoiceAPI.Seeders.EntitySeeders
                     {
                         Name = "ContractorTest1",
                         TIN = 1111111111,
-                        AddressDetails = new()
+                        Address = new()
                         {
                             AddressLine1 = "Street Test1",
                             City = "TestCity1"
                         },
-                        ContactDetails = new()
+                        Contact = new()
                         {
                             EmailAddress = "contractorTest@test.com",
                             Phone = "+48333333333"

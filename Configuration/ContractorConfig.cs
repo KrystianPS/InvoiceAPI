@@ -8,11 +8,11 @@ namespace InvoiceAPI.Configuration
     {
         public void Configure(EntityTypeBuilder<Contractor> eb)
         {
-            eb.HasOne(cad => cad.AddressDetails)
+            eb.HasOne(cad => cad.Address)
                 .WithOne(c => c.Contractor)
                 .HasForeignKey<ContractorAddressDetails>(ad => ad.Id);
 
-            eb.HasOne(ccd => ccd.ContactDetails)
+            eb.HasOne(ccd => ccd.Contact)
                 .WithOne(c => c.Contractor)
                 .HasForeignKey<ContractorContactDetails>(cd => cd.Id);
 

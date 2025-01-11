@@ -23,14 +23,14 @@ namespace InvoiceAPI.Seeders.EntitySeeders
                     {
                         Name = "TestCompany",
                         TIN = 111111111,
-                        AddressDetails = new CompanyAddressDetails
+                        Address = new CompanyAddressDetails
                         {
                             AddressLine1 = "AddressLine1",
                             PostalCode = "11-111",
                             City = "Gdańsk",
                             Country = "Polska"
                         },
-                        ContactDetails = new CompanyContactDetails
+                        Contact = new CompanyContactDetails
                         {
                             EmailAddress = "testCompany@test.com",
                             Phone = "+48222222222"

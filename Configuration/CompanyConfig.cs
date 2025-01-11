@@ -8,12 +8,12 @@ namespace InvoiceAPI.Configuration
     {
         public void Configure(EntityTypeBuilder<Company> eb)
         {
-            eb.HasOne(cad => cad.AddressDetails)
+            eb.HasOne(cad => cad.Address)
                 .WithOne(c => c.Company)
                 .HasForeignKey<CompanyAddressDetails>(ad => ad.Id)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            eb.HasOne(ccd => ccd.ContactDetails)
+            eb.HasOne(ccd => ccd.Contact)
                 .WithOne(c => c.Company)
                 .HasForeignKey<CompanyContactDetails>(cd => cd.Id)
                 .OnDelete(DeleteBehavior.Cascade);

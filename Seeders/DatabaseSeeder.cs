@@ -7,13 +7,19 @@ namespace InvoiceAPI.Seeders
     {
         private readonly InvoiceAPIDbContext _dbContext;
         private readonly VatRateSeeder _vatRateSeeder;
+        private readonly ContractorSeeder _contractorSeeder;
+        private readonly CompanySeeder _companySeeder;
 
         public DatabaseSeeder(
             InvoiceAPIDbContext dbContext,
-            VatRateSeeder vatRateSeeder)
+            VatRateSeeder vatRateSeeder,
+            ContractorSeeder contractorSeeder,
+            CompanySeeder companySeeder)
         {
             _dbContext = dbContext;
             _vatRateSeeder = vatRateSeeder;
+            _contractorSeeder = contractorSeeder;
+            _companySeeder = companySeeder;
         }
 
         public async Task Seed()
@@ -22,6 +28,8 @@ namespace InvoiceAPI.Seeders
             {
 
                 await _vatRateSeeder.Seed();
+                await _companySeeder.Seed();
+                await _contractorSeeder.Seed();
 
 
             }

@@ -15,6 +15,8 @@ namespace InvoiceAPI.Extensions
 
             services.AddScoped<DatabaseSeeder>();
             services.AddScoped<VatRateSeeder>();
+            services.AddScoped<ContractorSeeder>();
+            services.AddScoped<CompanySeeder>();
 
         }
 

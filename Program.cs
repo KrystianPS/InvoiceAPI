@@ -12,11 +12,19 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
-var scope = app.Services.CreateScope();
+using var scope = app.Services.CreateScope();
+var services = scope.ServiceProvider;
 
-var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
-
-await seeder.Seed();
+try
+{
+    var seeder = services.GetRequiredService<DatabaseSeeder>();
+    await seeder.Seed();
+}
+catch (Exception ex)
+{
+    // Handle exceptions, e.g., log them
+    Console.WriteLine($"An error occurred during seeding: {ex.Message}");
+}
 
 // Configure the HTTP request pipeline.
 

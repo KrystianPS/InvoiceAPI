@@ -26,33 +26,8 @@ namespace InvoiceAPI.Seeders.EntitySeeders
                     );
 
                     await _dbContext.SaveChangesAsync();
-
-
                 }
             }
-        }
-        private IEnumerable<VatRate> GetVatRates()
-        {
-            var rates = new List<VatRate>()
-            {
-                new VatRate()
-                {
-                    Rate = 0.23m
-                },
-                new VatRate()
-                {
-                    Rate = 0.08m
-                },
-                new VatRate()
-                {
-                    Rate = 0.05m
-                },
-                new VatRate()
-                {
-                    Rate = 0m
-                }
-            };
-            return rates;
         }
     }
 }

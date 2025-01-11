@@ -5,6 +5,8 @@
         public required string Name { get; set; }
         public required int TIN { get; set; }
         public required string EmailAdress { get; set; }
+
+        public required string Phone { get; set; }
         public required string City { get; set; }
         public required string AddresLine1 { get; set; }
         public required string AddresLine2 { get; set; }

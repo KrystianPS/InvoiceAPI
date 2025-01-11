@@ -18,6 +18,8 @@ namespace InvoiceAPI.Extensions
             services.AddScoped<ContractorSeeder>();
             services.AddScoped<CompanySeeder>();
 
+            services.AddAutoMapper(typeof(ServiceCollectionExtension).Assembly);
+
         }
 
     }

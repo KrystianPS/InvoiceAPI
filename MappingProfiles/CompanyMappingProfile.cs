@@ -8,14 +8,18 @@ namespace InvoiceAPI.MappingProfiles
     {
         public CompanyMappingProfile()
         {
-            CreateMap<Company, CompanyDto>()
-                .ForMember(m => m.AddresLine1, c => c.MapFrom(s => s.Address.AddressLine1))
-                .ForMember(m => m.AddresLine2, c => c.MapFrom(s => s.Address.AddressLine2))
-                .ForMember(m => m.PostalCode, c => c.MapFrom(s => s.Address.PostalCode))
-                .ForMember(m => m.City, c => c.MapFrom(s => s.Address.City));
 
-            CreateMap<Contractor, ContractorDto>()
-                ;
+
+            CreateMap<Contractor, ContractorDto>();
+
+
+            CreateMap<Contractor, ContractorSummaryDto>()
+                .ForMember(dest => dest.ContractorId, opt => opt.MapFrom(src => src.Id));
+
+            CreateMap<CompanyAddressDetails, CompanyAddressDetailsDto>();
+
+            CreateMap<CompanyContactDetails, CompanyContactDetailsDto>();
+
         }
     }
 }

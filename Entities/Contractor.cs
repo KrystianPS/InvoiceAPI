@@ -7,8 +7,8 @@
         public Company Company { get; set; }
         public int CompanyId { get; set; }
         public int? TIN { get; set; }
-        public virtual ContractorAddressDetails? Address { get; set; }
-        public virtual ContractorContactDetails? Contact { get; set; }
+        public required virtual ContractorAddressDetails Address { get; set; }
+        public required virtual ContractorContactDetails Contact { get; set; }
 
 
 

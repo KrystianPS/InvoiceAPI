@@ -11,7 +11,7 @@ namespace InvoiceAPI.Seeders.EntitySeeders
             _dbContext = dbContext;
         }
 
-        public async Task Seed(Company seededCompany)
+        public async Task Seed()
         {
             if (_dbContext.Database.CanConnect())
             {

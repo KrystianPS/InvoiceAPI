@@ -18,14 +18,20 @@ namespace InvoiceAPI.Controllers
         }
 
         [HttpGet("all")]
-        public ActionResult<IEnumerable<CompanyDto>> GetAll()
+        public ActionResult<List<CompanyDto>> GetAll()
         {
             var companies = _dbContext
                 .Companies
-                .Include(r => r.Address)
-                .Include(r => r.Contact)
-                .Include(r => r.Contractors)
+                .Include(c => c.Address)
+                .Include(c => c.Contact)
+                .Include(c => c.Contractors)
                 .ToList();
+
+
+            if (companies is null)
+            {
+                return NotFound();
+            }
 
             var companiesDtos = _mapper.Map<List<CompanyDto>>(companies);
 

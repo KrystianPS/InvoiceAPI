@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InvoiceAPI.Migrations
 {
     [DbContext(typeof(InvoiceAPIDbContext))]
-    [Migration("20250110054036_Init")]
-    partial class Init
+    [Migration("20250112054127_RefactorDBModelInit")]
+    partial class RefactorDBModelInit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,21 +24,6 @@ namespace InvoiceAPI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("CompanyContractor", b =>
-                {
-                    b.Property<int>("CompaniesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ContractorsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CompaniesId", "ContractorsId");
-
-                    b.HasIndex("ContractorsId");
-
-                    b.ToTable("CompanyContractor");
-                });
 
             modelBuilder.Entity("InvoiceAPI.Entities.Company", b =>
                 {
@@ -115,6 +100,9 @@ namespace InvoiceAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("varchar(200)");
@@ -123,6 +111,8 @@ namespace InvoiceAPI.Migrations
                         .HasColumnType("varchar(10)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
 
                     b.HasIndex("Name")
                         .HasDatabaseName("IX_Contractors_Name");
@@ -136,18 +126,23 @@ namespace InvoiceAPI.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("AddressLine1")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("AddressLine2")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("City")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Country")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PostalCode")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -333,25 +328,10 @@ namespace InvoiceAPI.Migrations
                     b.ToTable("VatRates");
                 });
 
-            modelBuilder.Entity("CompanyContractor", b =>
-                {
-                    b.HasOne("InvoiceAPI.Entities.Company", null)
-                        .WithMany()
-                        .HasForeignKey("CompaniesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("InvoiceAPI.Entities.Contractor", null)
-                        .WithMany()
-                        .HasForeignKey("ContractorsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("InvoiceAPI.Entities.CompanyAddressDetails", b =>
                 {
                     b.HasOne("InvoiceAPI.Entities.Company", "Company")
-                        .WithOne("AddressDetails")
+                        .WithOne("Address")
                         .HasForeignKey("InvoiceAPI.Entities.CompanyAddressDetails", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -362,8 +342,19 @@ namespace InvoiceAPI.Migrations
             modelBuilder.Entity("InvoiceAPI.Entities.CompanyContactDetails", b =>
                 {
                     b.HasOne("InvoiceAPI.Entities.Company", "Company")
-                        .WithOne("ContactDetails")
+                        .WithOne("Contact")
                         .HasForeignKey("InvoiceAPI.Entities.CompanyContactDetails", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("InvoiceAPI.Entities.Contractor", b =>
+                {
+                    b.HasOne("InvoiceAPI.Entities.Company", "Company")
+                        .WithMany("Contractors")
+                        .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -373,7 +364,7 @@ namespace InvoiceAPI.Migrations
             modelBuilder.Entity("InvoiceAPI.Entities.ContractorAddressDetails", b =>
                 {
                     b.HasOne("InvoiceAPI.Entities.Contractor", "Contractor")
-                        .WithOne("AddressDetails")
+                        .WithOne("Address")
                         .HasForeignKey("InvoiceAPI.Entities.ContractorAddressDetails", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -384,7 +375,7 @@ namespace InvoiceAPI.Migrations
             modelBuilder.Entity("InvoiceAPI.Entities.ContractorContactDetails", b =>
                 {
                     b.HasOne("InvoiceAPI.Entities.Contractor", "Contractor")
-                        .WithOne("ContactDetails")
+                        .WithOne("Contact")
                         .HasForeignKey("InvoiceAPI.Entities.ContractorContactDetails", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -451,11 +442,13 @@ namespace InvoiceAPI.Migrations
 
             modelBuilder.Entity("InvoiceAPI.Entities.Company", b =>
                 {
-                    b.Navigation("AddressDetails")
+                    b.Navigation("Address")
                         .IsRequired();
 
-                    b.Navigation("ContactDetails")
+                    b.Navigation("Contact")
                         .IsRequired();
+
+                    b.Navigation("Contractors");
 
                     b.Navigation("Invoices");
 
@@ -464,9 +457,9 @@ namespace InvoiceAPI.Migrations
 
             modelBuilder.Entity("InvoiceAPI.Entities.Contractor", b =>
                 {
-                    b.Navigation("AddressDetails");
+                    b.Navigation("Address");
 
-                    b.Navigation("ContactDetails");
+                    b.Navigation("Contact");
 
                     b.Navigation("Invoices");
                 });

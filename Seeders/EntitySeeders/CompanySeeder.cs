@@ -19,10 +19,12 @@ namespace InvoiceAPI.Seeders.EntitySeeders
                 TIN = 111111111,
                 Address = new CompanyAddressDetails
                 {
-                    AddressLine1 = "AddressLine1",
+                    AddressLine1 = "Długa",
+                    AddressLine2 = "Building 2",
                     PostalCode = "11-111",
                     City = "Gdańsk",
                     Country = "Polska"
+
                 },
                 Contact = new CompanyContactDetails
                 {

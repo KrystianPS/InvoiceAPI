@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace InvoiceAPI.Controllers
 {
 
-    [Route("/contractor/all")]
+    [Route("/contractor")]
     public class ContractorController : ControllerBase
     {
         private readonly InvoiceAPIDbContext _dbContext;
@@ -22,8 +22,8 @@ namespace InvoiceAPI.Controllers
         {
             var contractors = _dbContext
                 .Contractors
-                .Include(r => r.Address)
-                .Include(r => r.Contact)
+                .Include(c => c.Address)
+                .Include(c => c.Contact)
                 .ToList();
 
             return Ok(contractors);

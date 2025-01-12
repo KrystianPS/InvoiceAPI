@@ -1,4 +1,5 @@
-﻿using InvoiceAPI.Persistance;
+﻿using InvoiceAPI.MappingProfiles;
+using InvoiceAPI.Persistance;
 using InvoiceAPI.Seeders;
 using InvoiceAPI.Seeders.EntitySeeders;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +19,14 @@ namespace InvoiceAPI.Extensions
             services.AddScoped<ContractorSeeder>();
             services.AddScoped<CompanySeeder>();
 
-            services.AddAutoMapper(typeof(ServiceCollectionExtension).Assembly);
+            services.AddAutoMapper(cfg =>
+            {
+                cfg.AddProfile<CompanyMappingProfile>();
+                cfg.AddProfile<ContractorMappingProfile>();
+            });
+
+
+
 
         }
 

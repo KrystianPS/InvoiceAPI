@@ -18,7 +18,7 @@ namespace InvoiceAPI.Controllers
             _mapper = mapper;
         }
         [HttpGet("all")]
-        public ActionResult<List<CompanyDto>> GetAll()
+        public ActionResult<List<ContractorDto>> GetAll()
         {
             var contractors = _dbContext
                 .Contractors

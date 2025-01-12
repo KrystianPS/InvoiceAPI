@@ -26,7 +26,14 @@ namespace InvoiceAPI.Controllers
                 .Include(c => c.Contact)
                 .ToList();
 
-            return Ok(contractors);
+            if (contractors is null)
+            {
+                return NotFound();
+            }
+
+            var contractorsDtos = _mapper.Map<List<ContractorDto>>(contractors);
+
+            return Ok(contractorsDtos);
         }
 
         [HttpGet("{id}")]

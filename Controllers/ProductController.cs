@@ -1,4 +1,5 @@
-﻿using InvoiceAPI.Entities;
+﻿using AutoMapper;
+using InvoiceAPI.Entities;
 using InvoiceAPI.Models;
 using InvoiceAPI.Persistance;
 using Microsoft.AspNetCore.Mvc;
@@ -10,30 +11,18 @@ namespace InvoiceAPI.Controllers
     public class ProductController : ControllerBase
     {
         private readonly InvoiceAPIDbContext _dbContext;
-        public ProductController(InvoiceAPIDbContext dbContext)
+        private readonly IMapper _mapper;
+        public ProductController(InvoiceAPIDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
+            _mapper = mapper;
         }
         [HttpGet("all")]
         public ActionResult<List<ProductDto>> GetAll()
         {
             var products = _dbContext.Products
                 .ToList();
-            var productsDtos = new List<ProductDto>();
-            foreach (Product product in products)
-            {
-                var newProductsDtos = new ProductDto
-                {
-                    Id = product.Id,
-                    Name = product.Name,
-                    Description = product.Description,
-                    UnitPriceNet = product.UnitPriceNet,
-                    ProductCategoryName = product.ProductCategoryName,
-                    CompanyId = product.CompanyId
-                };
-                productsDtos.Add(newProductsDtos);
-
-            }
+            var productsDtos = _mapper.Map<List<ProductDto>>(products);
             return Ok(productsDtos);
         }
         [HttpGet("{id}")]
@@ -42,20 +31,13 @@ namespace InvoiceAPI.Controllers
             var product = _dbContext.Products
                 .Include(c => c.ProductCategory)
                 .FirstOrDefault(c => c.Id == id);
+
             if (product is null)
             {
                 return NotFound();
             }
 
-            var productDto = new ProductDto
-            {
-                Id = product.Id,
-                Name = product.Name,
-                Description = product.Description,
-                UnitPriceNet = product.UnitPriceNet,
-                ProductCategoryName = product.ProductCategoryName,
-                CompanyId = product.CompanyId
-            };
+            var productDto = _mapper.Map<ProductDto>(product);
             return Ok(productDto);
         }
 

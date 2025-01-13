@@ -4,7 +4,7 @@ namespace InvoiceAPI.Services
 {
     public interface IContractorService
     {
-        int CreateContractor(CreateContractorDto dto);
+        Task<int> CreateContractor(CreateContractorDto dto);
         List<ContractorDto> GetAll();
         ContractorDto GetById(int id);
     }

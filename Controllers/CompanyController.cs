@@ -1,22 +1,18 @@
-﻿using AutoMapper;
-using InvoiceAPI.Models;
-using InvoiceAPI.Persistance;
+﻿using InvoiceAPI.Models;
+using InvoiceAPI.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace InvoiceAPI.Controllers
 {
     [Route("/company")]
     public class CompanyController : ControllerBase
     {
-        private readonly InvoiceAPIDbContext _dbContext;
-        private readonly IMapper _mapper;
+        private readonly ICompanyService _companyService;
 
 
-        public CompanyController(InvoiceAPIDbContext dbContext, IMapper mapper)
+        public CompanyController(ICompanyService companyService)
         {
-            _dbContext = dbContext;
-            _mapper = mapper;
+            _companyService = companyService;
 
         }
 
@@ -24,36 +20,29 @@ namespace InvoiceAPI.Controllers
 
         public ActionResult<List<CompanyDto>> GetAll()
         {
-            var companies = _dbContext
-                .Companies
-                .Include(c => c.Address)
-                .Include(c => c.Contact)
-                .Include(c => c.Contractors)
-                .ToList();
-
-            var companiesDtos = _mapper.Map<List<CompanyDto>>(companies);
-            return Ok(companiesDtos);
+            var companies = _companyService.GetAll();
+            return Ok(companies);
         }
 
 
         [HttpGet("{id}")]
         public ActionResult<CompanyDto> Get([FromRoute] int id)
         {
+            var company = _companyService.GetById(id);
 
+            return Ok(company);
+        }
 
-            var company = _dbContext.Companies
-                .Include(c => c.Address)
-                .Include(c => c.Contact)
-                .Include(c => c.Contractors)
-                .FirstOrDefault(c => c.Id == id);
-            if (company is null)
+        [HttpPost]
+        public async Task<ActionResult> Create([FromBody] CreateCompanyDto dto)
+        {
+            if (!ModelState.IsValid)
             {
-                return NotFound();
+                return BadRequest(ModelState);
             }
 
-
-            var companyDto = _mapper.Map<CompanyDto>(company);
-            return Ok(companyDto);
+            var id = await _companyService.CreateCompany(dto);
+            return Created($"company/{id}", dto);
         }
     }
 }

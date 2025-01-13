@@ -52,12 +52,12 @@ namespace InvoiceAPI.Services
             return result;
         }
 
-        public int CreateContractor(CreateContractorDto dto)
+        public async Task<int> CreateContractor(CreateContractorDto dto)
         {
             var contractor = _mapper.Map<Contractor>(dto);
 
-            _dbContext.Contractors.Add(contractor);
-            _dbContext.SaveChanges();
+            await _dbContext.Contractors.AddAsync(contractor);
+            await _dbContext.SaveChangesAsync();
 
             return contractor.Id;
         }

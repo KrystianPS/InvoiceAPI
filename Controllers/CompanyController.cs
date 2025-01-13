@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using InvoiceAPI.Entities;
 using InvoiceAPI.Models;
 using InvoiceAPI.Persistance;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +22,7 @@ namespace InvoiceAPI.Controllers
 
         [HttpGet("all")]
 
-        public ActionResult<List<Company>> GetAll()
+        public ActionResult<List<CompanyDto>> GetAll()
         {
             var companies = _dbContext
                 .Companies
@@ -31,12 +30,6 @@ namespace InvoiceAPI.Controllers
                 .Include(c => c.Contact)
                 .Include(c => c.Contractors)
                 .ToList();
-
-            if (companies is null)
-            {
-                return NotFound();
-            }
-
 
             var companiesDtos = _mapper.Map<List<CompanyDto>>(companies);
             return Ok(companiesDtos);

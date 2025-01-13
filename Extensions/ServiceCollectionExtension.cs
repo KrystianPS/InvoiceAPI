@@ -2,6 +2,7 @@
 using InvoiceAPI.Persistance;
 using InvoiceAPI.Seeders;
 using InvoiceAPI.Seeders.EntitySeeders;
+using InvoiceAPI.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace InvoiceAPI.Extensions
@@ -27,6 +28,9 @@ namespace InvoiceAPI.Extensions
                 cfg.AddProfile<ProductCategoryMappingProfile>();
 
             });
+
+            services.AddScoped<IContractorService, ContractorService>();
+            services.AddScoped<IProductService, ProductService>();
 
 
 

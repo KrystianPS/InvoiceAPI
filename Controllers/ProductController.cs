@@ -1,10 +1,12 @@
-﻿using InvoiceAPI.Models;
+﻿using InvoiceAPI.Entities;
+using InvoiceAPI.Models;
 using InvoiceAPI.Persistance;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace InvoiceAPI.Controllers
 {
-    [Route("api/product")]
+    [Route("/product")]
     public class ProductController : ControllerBase
     {
         private readonly InvoiceAPIDbContext _dbContext;
@@ -15,17 +17,94 @@ namespace InvoiceAPI.Controllers
         [HttpGet("all")]
         public ActionResult<List<ProductDto>> GetAll()
         {
-            var contractors = _dbContext.Products.ToList();
+            var products = _dbContext.Products
+                .ToList();
+            var productsDtos = new List<ProductDto>();
+            foreach (Product product in products)
+            {
+                var newProductsDtos = new ProductDto
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    Description = product.Description,
+                    UnitPriceNet = product.UnitPriceNet,
+                    ProductCategoryName = product.ProductCategoryName,
+                    CompanyId = product.CompanyId
+                };
+                productsDtos.Add(newProductsDtos);
 
-            return Ok(contractors);
+            }
+            return Ok(productsDtos);
+        }
+        [HttpGet("{id}")]
+        public ActionResult<List<ProductDto>> GetById(int id)
+        {
+            var product = _dbContext.Products
+                .Include(c => c.ProductCategory)
+                .FirstOrDefault(c => c.Id == id);
+            if (product is null)
+            {
+                return NotFound();
+            }
+
+            var productDto = new ProductDto
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                UnitPriceNet = product.UnitPriceNet,
+                ProductCategoryName = product.ProductCategoryName,
+                CompanyId = product.CompanyId
+            };
+            return Ok(productDto);
         }
 
         [HttpPost]
-        public ActionResult CreateProduct([FromBody] ProductDto product)
+        public async Task<ActionResult<Product>> CreateProduct([FromBody] ProductDto dto)
         {
+            // Mapowanie DTO do obiektu Product
+            var product = new Product
+            {
+                Id = dto.Id,
+                Name = dto.Name,
+                Description = dto.Description,
+                UnitPriceNet = dto.UnitPriceNet,
+                ProductCategoryName = dto.ProductCategoryName,
+                CompanyId = dto.CompanyId
+            };
 
+            // Sprawdzamy, czy ProductCategoryName nie jest null i nie jest pusty
+            if (!string.IsNullOrEmpty(dto.ProductCategoryName))
+            {
+                // Pobieramy kategorię produktu z bazy danych na podstawie nazwy
+                var category = await _dbContext.ProductCategories
+                    .FirstOrDefaultAsync(c => c.Name == dto.ProductCategoryName);
+
+                if (category != null)
+                {
+
+                    product.ProductCategoryId = category.Id;
+                    product.ProductCategory = category;
+                }
+                else
+                {
+
+                    product.ProductCategoryId = null;
+                    product.ProductCategory = null;
+                }
+            }
+            else
+            {
+
+                product.ProductCategoryId = null;
+                product.ProductCategory = null;
+            }
+
+            _dbContext.Products.Add(product);
+            await _dbContext.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
         }
-
 
 
     }

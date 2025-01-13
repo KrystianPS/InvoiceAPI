@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace InvoiceAPI.Controllers
 {
 
-    [Route("/contractor/all")]
+    [Route("/contractor")]
     public class ContractorController : ControllerBase
     {
         private readonly InvoiceAPIDbContext _dbContext;
@@ -17,15 +17,23 @@ namespace InvoiceAPI.Controllers
             _dbContext = dbContext;
             _mapper = mapper;
         }
-        public ActionResult<List<CompanyDto>> GetAll()
+        [HttpGet("all")]
+        public ActionResult<List<ContractorDto>> GetAll()
         {
             var contractors = _dbContext
                 .Contractors
-                .Include(r => r.Address)
-                .Include(r => r.Contact)
+                .Include(c => c.Address)
+                .Include(c => c.Contact)
                 .ToList();
 
-            return Ok(contractors);
+            if (contractors is null)
+            {
+                return NotFound();
+            }
+
+            var contractorsDtos = _mapper.Map<List<ContractorDto>>(contractors);
+
+            return Ok(contractorsDtos);
         }
 
         [HttpGet("{id}")]

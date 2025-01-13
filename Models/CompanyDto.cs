@@ -2,6 +2,7 @@
 {
     public class CompanyDto
     {
+
         public required string Name { get; set; }
         public required int TIN { get; set; }
         public required string EmailAddress { get; set; }

@@ -11,34 +11,36 @@ namespace InvoiceAPI.Seeders.EntitySeeders
             _dbContext = dbContext;
         }
 
-        public async Task<Company> Seed()
+        public async Task Seed()
         {
-            var newCompany = new Company
-            {
-                Name = "TestCompany",
-                TIN = 111111111,
-                Address = new CompanyAddressDetails
-                {
-                    AddressLine1 = "AddressLine1",
-                    PostalCode = "11-111",
-                    City = "Gdańsk",
-                    Country = "Polska"
-                },
-                Contact = new CompanyContactDetails
-                {
-                    EmailAddress = "testCompany@test.com",
-                    Phone = "+48222222222"
-                }
-            };
             if (_dbContext.Database.CanConnect())
             {
                 if (!_dbContext.Companies.Any())
                 {
+                    var newCompany = new Company
+                    {
+                        Name = "TestCompany",
+                        TIN = 111111111,
+                        Address = new CompanyAddressDetails
+                        {
+                            AddressLine1 = "Długa",
+                            AddressLine2 = "Building 2",
+                            PostalCode = "11-111",
+                            City = "Gdańsk",
+                            Country = "Polska"
+
+                        },
+                        Contact = new CompanyContactDetails
+                        {
+                            EmailAddress = "testCompany@test.com",
+                            Phone = "+48222222222"
+                        }
+                    };
                     await _dbContext.Companies.AddAsync(newCompany);
                     await _dbContext.SaveChangesAsync();
+
                 }
             }
-            return newCompany;
         }
     }
 }

@@ -1,9 +1,10 @@
-﻿using InvoiceAPI.Persistance;
+﻿using InvoiceAPI.Models;
+using InvoiceAPI.Persistance;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InvoiceAPI.Controllers
 {
-    [Route("api/contractor")]
+    [Route("api/product")]
     public class ProductController : ControllerBase
     {
         private readonly InvoiceAPIDbContext _dbContext;
@@ -11,12 +12,21 @@ namespace InvoiceAPI.Controllers
         {
             _dbContext = dbContext;
         }
-        //public ActionResult<List<ProductDto>> GetAll()
-        //{
-        //    var contractors = _dbContext.Products.ToList();
+        [HttpGet("all")]
+        public ActionResult<List<ProductDto>> GetAll()
+        {
+            var contractors = _dbContext.Products.ToList();
 
-        //    return Ok(contractors);
-        //}
+            return Ok(contractors);
+        }
+
+        [HttpPost]
+        public ActionResult CreateProduct([FromBody] ProductDto product)
+        {
+
+        }
+
+
 
     }
 }

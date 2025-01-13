@@ -29,6 +29,7 @@ namespace InvoiceAPI.Extensions
 
             });
 
+            services.AddScoped<ICompanyService, CompanyService>();
             services.AddScoped<IContractorService, ContractorService>();
             services.AddScoped<IProductService, ProductService>();
 

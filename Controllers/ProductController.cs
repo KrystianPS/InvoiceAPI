@@ -44,13 +44,18 @@ namespace InvoiceAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Product>> CreateProduct([FromBody] CreateProductDto dto)
         {
-            // Mapowanie DTO do obiektu Product
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var product = _mapper.Map<Product>(dto);
 
-            // Sprawdzamy, czy ProductCategoryName nie jest null i nie jest pusty
+
             if (!string.IsNullOrEmpty(dto.ProductCategoryName))
             {
-                // Pobieramy kategorię produktu z bazy danych na podstawie nazwy
+
                 var category = await _dbContext.ProductCategories
                     .FirstOrDefaultAsync(c => c.Name == dto.ProductCategoryName);
 

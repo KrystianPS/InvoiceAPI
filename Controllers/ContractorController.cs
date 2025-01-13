@@ -59,6 +59,11 @@ namespace InvoiceAPI.Controllers
         [HttpPost]
         public ActionResult CreateContractor([FromBody] CreateContractorDto dto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var contractor = _mapper.Map<Contractor>(dto);
 
             _dbContext.Contractors.Add(contractor);

@@ -19,20 +19,20 @@ namespace InvoiceAPI.MappingProfiles
             CreateMap<CreateContractorDto, Contractor>()
              .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
              .ForMember(dest => dest.TIN, opt => opt.MapFrom(src => src.TIN))
-             .ForMember(dest => dest.CompanyId, opt => opt.MapFrom(src => src.CompanyId));
-            //.ForMember(dest => dest.Address, opt => opt.MapFrom(src => new ContractorAddressDetails
-            //{
-            //    AddressLine1 = src.Address.AddressLine1,
-            //    AddressLine2 = src.Address.AddressLine2,
-            //    City = src.Address.City,
-            //    PostalCode = src.Address.PostalCode,
-            //    Country = src.Address.Country
-            //}))
-            //.ForMember(dest => dest.Contact, opt => opt.MapFrom(src => new ContractorContactDetails
-            //{
-            //    Phone = src.Contact.Phone,
-            //    EmailAddress = src.Contact.EmailAddress
-            //}));
+             .ForMember(dest => dest.CompanyId, opt => opt.MapFrom(src => src.CompanyId))
+            .ForMember(dest => dest.Address, opt => opt.MapFrom(src => new ContractorAddressDetails
+            {
+                AddressLine1 = src.Address.AddressLine1,
+                AddressLine2 = src.Address.AddressLine2,
+                City = src.Address.City,
+                PostalCode = src.Address.PostalCode,
+                Country = src.Address.Country
+            }))
+            .ForMember(dest => dest.Contact, opt => opt.MapFrom(src => new ContractorContactDetails
+            {
+                Phone = src.Contact.Phone,
+                EmailAddress = src.Contact.EmailAddress
+            }));
 
 
 

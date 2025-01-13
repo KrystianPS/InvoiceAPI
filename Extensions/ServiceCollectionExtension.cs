@@ -21,8 +21,8 @@ namespace InvoiceAPI.Extensions
 
             services.AddAutoMapper(cfg =>
             {
-                cfg.AddProfile<CompanyMappingProfile>();
-                cfg.AddProfile<ContractorMappingProfile>();
+                cfg.AddProfile<InvoiceApiMappingProfile>();
+
             });
 
 

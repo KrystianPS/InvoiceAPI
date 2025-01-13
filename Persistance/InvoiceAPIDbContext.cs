@@ -23,6 +23,8 @@ namespace InvoiceAPI.Persistance
         public DbSet<InvoiceItem> InvoiceItems { get; set; }
 
         public DbSet<Product> Products { get; set; }
+
+        public DbSet<ProductCategory> ProductCategories { get; set; }
         public DbSet<VatRate> VatRates { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

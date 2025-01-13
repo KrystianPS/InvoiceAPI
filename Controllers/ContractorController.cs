@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using InvoiceAPI.Entities;
 using InvoiceAPI.Models;
 using InvoiceAPI.Persistance;
 using Microsoft.AspNetCore.Mvc;
@@ -54,6 +55,21 @@ namespace InvoiceAPI.Controllers
 
             return Ok(contractorDto);
         }
+
+        [HttpPost]
+        public ActionResult CreateContractor([FromBody] CreateContractorDto dto)
+        {
+            var contractor = _mapper.Map<Contractor>(dto);
+
+            _dbContext.Contractors.Add(contractor);
+            _dbContext.SaveChanges();
+            _dbContext.ChangeTracker.Clear();
+
+
+            return Created($"contractor/{contractor.Id}", null);
+
+        }
+
 
     }
 }

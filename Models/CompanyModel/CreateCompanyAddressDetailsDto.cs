@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace InvoiceAPI.Models
+namespace InvoiceAPI.Models.CompanyModel
 {
     public class CreateCompanyAddressDetailsDto
     {

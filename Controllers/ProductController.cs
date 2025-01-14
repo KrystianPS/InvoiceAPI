@@ -1,5 +1,6 @@
 ﻿using InvoiceAPI.Entities;
 using InvoiceAPI.Models;
+using InvoiceAPI.Models.ProductModel;
 using InvoiceAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 

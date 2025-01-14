@@ -1,4 +1,4 @@
-﻿namespace InvoiceAPI.Models
+﻿namespace InvoiceAPI.Models.ContractorModel
 {
     public class ContractorDto
     {

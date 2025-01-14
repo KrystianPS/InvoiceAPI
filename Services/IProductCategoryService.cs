@@ -1,4 +1,4 @@
-﻿using InvoiceAPI.Models;
+﻿using InvoiceAPI.Models.ProductCategoryModel;
 
 namespace InvoiceAPI.Services
 {

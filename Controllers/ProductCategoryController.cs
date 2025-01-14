@@ -1,5 +1,5 @@
 ﻿using InvoiceAPI.Entities;
-using InvoiceAPI.Models;
+using InvoiceAPI.Models.ProductCategoryModel;
 using InvoiceAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 

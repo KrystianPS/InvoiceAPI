@@ -1,6 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using InvoiceAPI.Models.ContractorModel;
+using System.ComponentModel.DataAnnotations;
 
-namespace InvoiceAPI.Models
+namespace InvoiceAPI.Models.CompanyModel
 {
     public class CreateCompanyDto
     {

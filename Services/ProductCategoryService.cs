@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using InvoiceAPI.Entities;
-using InvoiceAPI.Models;
+using InvoiceAPI.Models.ProductCategoryModel;
 using InvoiceAPI.Persistance;
 using Microsoft.EntityFrameworkCore;
 

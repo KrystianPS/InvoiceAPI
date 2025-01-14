@@ -1,4 +1,6 @@
-﻿namespace InvoiceAPI.Models
+﻿using InvoiceAPI.Models.ContractorModel;
+
+namespace InvoiceAPI.Models.CompanyModel
 {
     public class CompanyDto
     {

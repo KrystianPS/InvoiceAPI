@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using InvoiceAPI.Entities;
 using InvoiceAPI.Models;
+using InvoiceAPI.Models.ProductModel;
 using InvoiceAPI.Persistance;
 using Microsoft.EntityFrameworkCore;
 

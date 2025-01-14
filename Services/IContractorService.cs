@@ -1,4 +1,4 @@
-﻿using InvoiceAPI.Models;
+﻿using InvoiceAPI.Models.ContractorModel;
 
 namespace InvoiceAPI.Services
 {

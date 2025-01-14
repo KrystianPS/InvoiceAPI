@@ -1,4 +1,4 @@
-﻿using InvoiceAPI.Models;
+﻿using InvoiceAPI.Models.ContractorModel;
 using InvoiceAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 

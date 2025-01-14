@@ -1,5 +1,6 @@
-﻿using AutoMapper;
-using InvoiceAPI.Persistance;
+﻿using InvoiceAPI.Entities;
+using InvoiceAPI.Models;
+using InvoiceAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InvoiceAPI.Controllers
@@ -9,13 +10,37 @@ namespace InvoiceAPI.Controllers
     public class ProductCategoryController : ControllerBase
     {
 
-        private readonly InvoiceAPIDbContext _dbContext;
-        private readonly IMapper _mapper;
-        public ProductCategoryController(InvoiceAPIDbContext dbContext, IMapper mapper)
+        private readonly IProductCategoryService _productCategoryService;
+        public ProductCategoryController(IProductCategoryService productCategoryService)
         {
-            _dbContext = dbContext;
-            _mapper = mapper;
+            _productCategoryService = productCategoryService;
         }
 
+        [HttpGet("all")]
+        public ActionResult<List<ProductCategoryDto>> GetAll()
+        {
+            var categories = _productCategoryService.GetAll();
+            return Ok(categories);
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult<ProductCategoryDto> GetById(int id)
+        {
+            var category = _productCategoryService.GetById(id);
+            return Ok(category);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<ProductCategory>> Create([FromBody] CreateProductCategoryDto dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var id = _productCategoryService.CreateProductCategory(dto);
+
+            return Created($"category/{id}", null);
+        }
     }
 }

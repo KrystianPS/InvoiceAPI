@@ -8,7 +8,11 @@ namespace InvoiceAPI.MappingProfiles
     {
         public ProductCategoryMappingProfile()
         {
-            CreateMap<ProductCategory, ProductCategoryDto>();
+            CreateMap<ProductCategory, ProductCategoryDto>()
+                .ForMember(m => m.Products, pc => pc.MapFrom(p => p.Products));
+
+            CreateMap<CreateProductCategoryDto, ProductCategory>();
         }
+
     }
 }

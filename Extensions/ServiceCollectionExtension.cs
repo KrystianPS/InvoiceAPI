@@ -24,6 +24,7 @@ namespace InvoiceAPI.Extensions
                 cfg.AddProfile<ContractorMappingProfile>();
                 cfg.AddProfile<ProductMappingProfile>();
                 cfg.AddProfile<CompanyMappingProfile>();
+                cfg.AddProfile<ProductCategoryMappingProfile>();
 
             });
 

@@ -4,7 +4,7 @@ namespace InvoiceAPI.Models
 {
     public class CreateProductDto
     {
-        public int Id { get; set; }
+
         [Required]
         [MaxLength(25)]
         public required string Name { get; set; }

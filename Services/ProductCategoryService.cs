@@ -19,6 +19,7 @@ namespace InvoiceAPI.Services
         public List<ProductCategoryDto> GetAll()
         {
             var categories = _dbContext.ProductCategories
+                .Include(x => x.Products)
                 .ToList();
             if (categories is null)
             {
@@ -32,6 +33,7 @@ namespace InvoiceAPI.Services
         public ProductCategoryDto GetById(int id)
         {
             var category = _dbContext.ProductCategories
+                .Include(x => x.Products)
                 .Include(pc => pc.Products)
                 .FirstOrDefault();
             if (category is null)

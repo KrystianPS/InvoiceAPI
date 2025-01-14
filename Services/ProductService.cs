@@ -53,8 +53,8 @@ namespace InvoiceAPI.Services
             if (!string.IsNullOrEmpty(dto.ProductCategoryName))
             {
 
-                var category = await _dbContext.ProductCategories
-                    .FirstOrDefaultAsync(c => c.Name == dto.ProductCategoryName);
+                var category = _dbContext.ProductCategories
+                    .FirstOrDefault(c => c.Name == dto.ProductCategoryName);
 
                 if (category != null)
                 {

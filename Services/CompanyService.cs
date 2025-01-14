@@ -63,5 +63,20 @@ namespace InvoiceAPI.Services
 
             return company.Id;
         }
+
+        public async Task<bool> DeleteCompany(int id)
+        {
+
+            var company = _dbContext
+                .Companies
+                .FirstOrDefault(p => p.Id == id);
+
+            if (company is null) return false;
+
+            _dbContext.Companies.Remove(company);
+            await _dbContext.SaveChangesAsync();
+
+            return true;
+        }
     }
 }

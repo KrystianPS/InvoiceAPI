@@ -44,5 +44,17 @@ namespace InvoiceAPI.Controllers
             var id = await _companyService.CreateCompany(dto);
             return Created($"company/{id}", dto);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete([FromRoute] int id)
+        {
+            var isDeleted = await _companyService.DeleteCompany(id);
+
+            if (!isDeleted)
+            {
+                return NotFound();
+            }
+            return Ok($"Company with id:{id} deleted");
+        }
     }
 }

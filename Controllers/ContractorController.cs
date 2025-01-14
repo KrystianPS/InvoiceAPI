@@ -44,6 +44,18 @@ namespace InvoiceAPI.Controllers
 
         }
 
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete([FromRoute] int id)
+        {
+            var isDeleted = await _contractorService.DeleteContractor(id);
+
+            if (!isDeleted)
+            {
+                return NotFound();
+            }
+            return Ok($"Contractor with id:{id} deleted");
+        }
+
 
     }
 }

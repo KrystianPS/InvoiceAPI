@@ -61,6 +61,18 @@ namespace InvoiceAPI.Services
 
             return contractor.Id;
         }
+        public async Task<bool> DeleteContractor(int id)
+        {
+            var contractor = _dbContext
+                .Contractors
+                .FirstOrDefault(p => p.Id == id);
 
+            if (contractor is null) return false;
+
+            _dbContext.Contractors.Remove(contractor);
+            await _dbContext.SaveChangesAsync();
+
+            return true;
+        }
     }
 }

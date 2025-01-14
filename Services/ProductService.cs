@@ -91,7 +91,7 @@ namespace InvoiceAPI.Services
             if (product is null) return false;
 
             _dbContext.Products.Remove(product);
-            _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
 
             return true;
         }

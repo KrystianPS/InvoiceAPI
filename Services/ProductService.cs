@@ -82,5 +82,19 @@ namespace InvoiceAPI.Services
             return product.Id;
         }
 
+        public async Task<bool> DeleteProduct(int id)
+        {
+            var product = _dbContext
+                .Products
+                .FirstOrDefault(p => p.Id == id);
+
+            if (product is null) return false;
+
+            _dbContext.Products.Remove(product);
+            _dbContext.SaveChangesAsync();
+
+            return true;
+        }
+
     }
 }

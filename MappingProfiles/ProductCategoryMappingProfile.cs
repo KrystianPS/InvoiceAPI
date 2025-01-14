@@ -13,6 +13,5 @@ namespace InvoiceAPI.MappingProfiles
 
             CreateMap<CreateProductCategoryDto, ProductCategory>();
         }
-
     }
 }

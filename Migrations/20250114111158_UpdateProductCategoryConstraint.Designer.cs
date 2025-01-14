@@ -4,6 +4,7 @@ using InvoiceAPI.Persistance;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InvoiceAPI.Migrations
 {
     [DbContext(typeof(InvoiceAPIDbContext))]
-    partial class InvoiceAPIDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250114111158_UpdateProductCategoryConstraint")]
+    partial class UpdateProductCategoryConstraint
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -428,7 +431,7 @@ namespace InvoiceAPI.Migrations
                     b.HasOne("InvoiceAPI.Entities.ProductCategory", "ProductCategory")
                         .WithMany("Products")
                         .HasForeignKey("ProductCategoryId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Company");
 

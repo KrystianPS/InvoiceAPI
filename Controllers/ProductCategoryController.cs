@@ -42,5 +42,17 @@ namespace InvoiceAPI.Controllers
 
             return Created($"category/{id}", null);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete([FromRoute] int id)
+        {
+            var isDeleted = await _productCategoryService.DeleteProductCategory(id);
+
+            if (!isDeleted)
+            {
+                return NotFound();
+            }
+            return Ok($"Product Category with id:{id} deleted");
+        }
     }
 }

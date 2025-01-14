@@ -11,7 +11,7 @@ namespace InvoiceAPI.Configuration
             eb.HasOne(p => p.ProductCategory)
                 .WithMany(pc => pc.Products)
                 .HasForeignKey(p => p.ProductCategoryId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.SetNull);
 
             eb.HasOne(p => p.Company)
                 .WithMany(c => c.Products)

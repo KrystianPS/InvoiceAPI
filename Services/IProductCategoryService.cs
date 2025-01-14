@@ -6,6 +6,8 @@ namespace InvoiceAPI.Services
     {
         Task<int> CreateProductCategory(CreateProductCategoryDto dto);
 
+        Task<bool> DeleteProductCategory(int id);
+
         List<ProductCategoryDto> GetAll();
 
         ProductCategoryDto GetById(int id);

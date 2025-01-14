@@ -55,5 +55,19 @@ namespace InvoiceAPI.Services
             return category.Id;
 
         }
+
+        public async Task<bool> DeleteProductCategory(int id)
+        {
+            var productCategories = _dbContext
+                .ProductCategories
+                .FirstOrDefault(p => p.Id == id);
+
+            if (productCategories is null) return false;
+
+            _dbContext.ProductCategories.Remove(productCategories);
+            await _dbContext.SaveChangesAsync();
+
+            return true;
+        }
     }
 }

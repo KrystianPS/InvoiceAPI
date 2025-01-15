@@ -3,7 +3,7 @@
     public class ContractorDto
     {
 
-
+        public int Id { get; set; }
         public required string Name { get; set; }
         public int? TIN { get; set; }
         public required string EmailAddress { get; set; }

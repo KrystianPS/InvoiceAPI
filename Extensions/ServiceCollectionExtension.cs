@@ -26,6 +26,8 @@ namespace InvoiceAPI.Extensions
                 cfg.AddProfile<ProductMappingProfile>();
                 cfg.AddProfile<CompanyMappingProfile>();
                 cfg.AddProfile<ProductCategoryMappingProfile>();
+                cfg.AddProfile<InvoiceMappingProfile>();
+
 
             });
 
@@ -33,6 +35,7 @@ namespace InvoiceAPI.Extensions
             services.AddScoped<IContractorService, ContractorService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IProductCategoryService, ProductCategoryService>();
+            services.AddScoped<IInvoiceService, InvoiceService>();
 
 
 

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InvoiceAPI.Services
 {
-    public class InvoiceService
+    public class InvoiceService : IInvoiceService
     {
         private readonly InvoiceAPIDbContext _dbContext;
         private readonly IMapper _mapper;
@@ -17,11 +17,70 @@ namespace InvoiceAPI.Services
             _mapper = mapper;
         }
 
-        public async Task<int> CreateIncvoice(CreateInvoiceDto dto)
+        public async Task<int> CreateInvoice(CreateInvoiceDto createInvoiceDto)
         {
-            var invoice = _mapper.Map<Invoice>(dto);
 
-            await _dbContext.Invoices.AddAsync(invoice);
+
+            var company = await _dbContext.Companies.FindAsync(createInvoiceDto.CompanyId);
+            if (company == null)
+            {
+                throw new ArgumentException($"Company with ID {createInvoiceDto.CompanyId} not found.");
+            }
+
+
+            var contractor = await _dbContext.Contractors.FindAsync(createInvoiceDto.ContractorId);
+            if (contractor == null)
+            {
+                throw new ArgumentException($"Contractor with ID {createInvoiceDto.ContractorId} not found.");
+            }
+
+
+            var invoiceItems = createInvoiceDto.InvoiceItems.Select(itemDto =>
+            {
+                var product = _dbContext.Products.Find(itemDto.ProductId);
+                if (product == null)
+                {
+                    throw new ArgumentException($"Product with ID {itemDto.ProductId} not found.");
+                }
+
+                var itemPriceNet = product.UnitPriceNet * itemDto.Quantity;
+                var itemVatAmount = itemPriceNet * itemDto.VatRate / 100;
+                var itemPriceGross = itemPriceNet + itemVatAmount;
+
+
+                return new InvoiceItem
+                {
+                    ProductId = itemDto.ProductId,
+                    Quantity = itemDto.Quantity,
+                    ItemPriceNet = itemPriceNet,
+                    VatRate = itemDto.VatRate,
+                    ItemVatAmount = itemVatAmount,
+                    ItemPriceGross = itemPriceGross
+                };
+            }).ToList();
+
+
+            var totalNet = invoiceItems.Sum(i => i.ItemPriceNet);
+            var totalVat = invoiceItems.Sum(i => i.ItemVatAmount);
+            var totalGross = totalNet + totalVat;
+
+
+            var invoice = new Invoice
+            {
+                InvoiceNumber = createInvoiceDto.InvoiceNumber ?? GenerateInvoiceNumber(),
+                IssueDate = DateTime.UtcNow,
+                DueDate = createInvoiceDto.DueDate,
+                InvoiceNote = createInvoiceDto.InvoiceNote,
+                CompanyId = createInvoiceDto.CompanyId,
+                ContractorId = createInvoiceDto.ContractorId,
+                TotalNet = totalNet,
+                TotalVatAmount = totalVat,
+                TotalGross = totalGross,
+                InvoiceItems = invoiceItems
+            };
+
+
+            _dbContext.Invoices.Add(invoice);
             await _dbContext.SaveChangesAsync();
 
             return invoice.Id;
@@ -40,13 +99,52 @@ namespace InvoiceAPI.Services
             return true;
         }
 
+        public List<InvoiceDto> GetAllByCompanyId(int id)
+        {
+            var invoices = _dbContext
+               .Invoices
+               .Include(r => r.Contractor)
+               .Include(r => r.Company)
+               .Include(r => r.InvoiceItems)
+               .Where(c => c.CompanyId == id);
+
+            if (invoices is null)
+            {
+                return null;
+            }
+
+            var result = _mapper.Map<List<InvoiceDto>>(invoices);
+
+            return result;
+        }
+
+        public List<InvoiceDto> GetAllByContractorId(int id)
+        {
+            var invoices = _dbContext
+               .Invoices
+               .Include(r => r.Contractor)
+               .Include(r => r.Company)
+               .Include(r => r.InvoiceItems)
+               .Where(c => c.ContractorId == id);
+
+            if (invoices is null)
+            {
+                return null;
+            }
+
+            var result = _mapper.Map<List<InvoiceDto>>(invoices);
+
+            return result;
+        }
+
         public InvoiceDto GetById(int id)
         {
             var invoice = _dbContext
-               .Invoices
-               .Include(r => r.Address)
-               .Include(r => r.Contact)
-               .FirstOrDefault(c => c.Id == id);
+                .Invoices
+                .Include(r => r.Contractor)
+                .Include(r => r.Company)
+                .Include(r => r.InvoiceItems)
+                .Where(c => c.Id == id);
 
             if (invoice is null)
             {
@@ -72,10 +170,20 @@ namespace InvoiceAPI.Services
                 return null;
             }
 
-            var result = _mapper.Map<List<IncvoiceDto>>(invoices);
+            var result = _mapper.Map<List<InvoiceDto>>(invoices);
 
             return result;
         }
 
+
+
+        //additional basic invoice number creation method = to be developed later #todo
+        public string GenerateInvoiceNumber(int? lastInvoiceNumber = null)
+        {
+            string month = DateTime.Now.ToString("MM");
+            int nextInvoiceNumber = (lastInvoiceNumber ?? 0) + 1;
+            return $"{month}/FV/{nextInvoiceNumber:D3}";
+        }
     }
+
 }

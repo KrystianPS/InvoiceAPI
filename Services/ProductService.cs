@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using InvoiceAPI.DtoModels.ProductModel;
 using InvoiceAPI.Entities;
 using InvoiceAPI.Models;
 using InvoiceAPI.Models.ProductModel;
@@ -95,6 +96,30 @@ namespace InvoiceAPI.Services
             await _dbContext.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<bool> UpdateProduct(int id, UpdateProductDto dto)
+        {
+            var product = _dbContext
+                .Products
+                .FirstOrDefault(p => p.Id == id);
+
+            if (product is null) return false;
+
+            if (dto.UnitPriceNet != product.UnitPriceNet)
+            {
+                product.UnitPriceNet = dto.UnitPriceNet;
+            };
+
+            if (dto.Description is not null && dto.Description != product.Description)
+            {
+                product.Description = dto.Description;
+            };
+
+            await _dbContext.SaveChangesAsync();
+
+            return true;
+
         }
 
     }

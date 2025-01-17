@@ -2,7 +2,6 @@
 using InvoiceAPI.DtoModels.CompanyModel;
 using InvoiceAPI.DtoModels.InvoiceModel;
 using InvoiceAPI.Entities;
-using InvoiceAPI.Models.ContractorModel;
 using InvoiceAPI.Models.InvoiceModel;
 
 namespace InvoiceAPI.MappingProfiles
@@ -20,7 +19,7 @@ namespace InvoiceAPI.MappingProfiles
 
             CreateMap<InvoiceItem, InvoiceItemDto>().ReverseMap();
 
-            CreateMap<Contractor, ContractorDto>().ReverseMap();
+            //CreateMap<Contractor, ContractorDto>().ReverseMap();
 
             CreateMap<Company, CompanySummaryDto>()
               .ForMember(m => m.AddressLine1, c => c.MapFrom(s => s.Address.AddressLine1))

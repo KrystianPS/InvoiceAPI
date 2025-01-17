@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using InvoiceAPI.DtoModels.ContractorModel;
 using InvoiceAPI.Entities;
 using InvoiceAPI.Models.ContractorModel;
 using InvoiceAPI.Persistance;
@@ -65,7 +66,7 @@ namespace InvoiceAPI.Services
         {
             var contractor = _dbContext
                 .Contractors
-                .FirstOrDefault(p => p.Id == id);
+                .FirstOrDefault(c => c.Id == id);
 
             if (contractor is null) return false;
 
@@ -74,5 +75,35 @@ namespace InvoiceAPI.Services
 
             return true;
         }
+
+        public bool UpdateContractor(int id, UpdateContractorDto dto)
+        {
+            var contractor = _dbContext
+                .Contractors
+                .Include(c => c.Address)
+                .Include(c => c.Contact)
+                .FirstOrDefault(c => c.Id == id);
+
+            if (contractor is null) return false;
+
+            contractor.Name = dto.Name ?? contractor.Name;
+            contractor.Address.AddressLine1 = dto.AddressLine1 ?? contractor.Address.AddressLine1;
+            contractor.Address.AddressLine2 = dto.AddressLine2 ?? contractor.Address.AddressLine2;
+            contractor.Address.PostalCode = dto.PostalCode ?? contractor.Address.PostalCode;
+            contractor.Address.City = dto.City ?? contractor.Address.City;
+            contractor.Address.Country = dto.Country ?? contractor.Address.Country;
+            contractor.Contact.EmailAddress = dto.EmailAddress ?? contractor.Contact.EmailAddress;
+            contractor.Contact.Phone = dto.Phone ?? contractor.Contact.Phone;
+
+
+            _dbContext.SaveChanges();
+
+            return true;
+        }
+
+
+
+
+
     }
 }

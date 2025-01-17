@@ -1,4 +1,5 @@
-﻿using InvoiceAPI.Models.ContractorModel;
+﻿using InvoiceAPI.DtoModels.ContractorModel;
+using InvoiceAPI.Models.ContractorModel;
 using InvoiceAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +18,8 @@ namespace InvoiceAPI.Controllers
         public ActionResult<List<ContractorDto>> GetAll()
         {
             var contractors = _contractorService.GetAll();
+
+
 
             return Ok(contractors);
         }
@@ -54,6 +57,24 @@ namespace InvoiceAPI.Controllers
                 return NotFound();
             }
             return Ok($"Contractor with id:{id} deleted");
+        }
+
+        [HttpPut("{id}")]
+        public ActionResult Update([FromRoute] int id, [FromBody] UpdateContractorDto dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var isUpdated = _contractorService.UpdateContractor(id, dto);
+
+            if (!isUpdated)
+            {
+                return NotFound();
+            }
+            return Ok($"Contractor with id:{id} has been updated");
+
         }
 
 

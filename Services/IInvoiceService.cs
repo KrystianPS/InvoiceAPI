@@ -5,10 +5,10 @@ namespace InvoiceAPI.Services
     public interface IInvoiceService
     {
         Task<int> CreateInvoice(CreateInvoiceDto createInvoiceDto);
-        Task<bool> DeleteIncvoice(int id);
+        Task<bool> DeleteInvoice(int id);
         List<InvoiceDto> GetAll();
+        InvoiceDto GetById(int id);
         List<InvoiceDto> GetAllByCompanyId(int id);
         List<InvoiceDto> GetAllByContractorId(int id);
-        InvoiceDto GetById(int id);
     }
 }

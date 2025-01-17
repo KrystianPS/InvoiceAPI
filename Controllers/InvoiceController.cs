@@ -38,9 +38,22 @@ namespace InvoiceAPI.Controllers
             {
                 return StatusCode(500, ex.Message);
             }
-
-
         }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete([FromRoute] int id)
+        {
+            var isDeleted = await _invoiceService.DeleteInvoice(id);
+
+            if (!isDeleted)
+            {
+                return NotFound();
+            }
+            return Ok($"Invoice with id:{id} deleted");
+        }
+
+
+
 
         [HttpGet("all")]
         public ActionResult<List<InvoiceDto>> GetAll()
@@ -49,9 +62,31 @@ namespace InvoiceAPI.Controllers
             return Ok(products);
         }
         [HttpGet("{id}")]
-        public ActionResult<List<InvoiceDto>> GetById(int id)
+        public ActionResult<List<InvoiceDto>> GetById([FromRoute] int id)
         {
             var invoices = _invoiceService.GetById(id);
+            return Ok(invoices);
+        }
+
+        [HttpGet("company/{id}")]
+        public ActionResult GetAllByCompanyId([FromRoute] int id)
+        {
+            var invoices = _invoiceService.GetAllByCompanyId(id);
+            if (invoices == null || !invoices.Any())
+            {
+                return NotFound($"No invoices found for company with ID {id}");
+            }
+            return Ok(invoices);
+        }
+
+        [HttpGet("contractor/{id}")]
+        public ActionResult GetAllByContractorId([FromRoute] int id)
+        {
+            var invoices = _invoiceService.GetAllByContractorId(id);
+            if (invoices == null || !invoices.Any())
+            {
+                return NotFound($"No invoices found for contractor with ID {id}");
+            }
             return Ok(invoices);
         }
     }

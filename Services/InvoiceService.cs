@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using InvoiceAPI.Entities;
 using InvoiceAPI.Models.InvoiceModel;
 using InvoiceAPI.Persistance;
@@ -17,6 +18,83 @@ namespace InvoiceAPI.Services
             _mapper = mapper;
         }
 
+
+        public List<InvoiceDto> GetAllByCompanyId(int id)
+        {
+            var invoices = _dbContext
+             .Invoices
+             .Include(r => r.Contractor)
+             .Include(r => r.Company)
+             .Include(r => r.InvoiceItems)
+             .Where(c => c.CompanyId == id)
+             .ToList();
+
+            var result = _mapper.Map<List<InvoiceDto>>(invoices);
+            return result;
+
+        }
+        public List<InvoiceDto> GetAllByContractorId(int id)
+        {
+            var invoices = _dbContext
+               .Invoices
+               .Include(r => r.Contractor)
+               .Include(r => r.Company)
+               .Include(r => r.InvoiceItems)
+               .Where(c => c.ContractorId == id)
+               .ProjectTo<InvoiceDto>(_mapper.ConfigurationProvider)
+               .ToList();
+
+            return invoices;
+        }
+
+        public InvoiceDto GetById(int id)
+        {
+            var invoice = _dbContext
+                .Invoices
+                .Include(r => r.Contractor)
+                .Include(r => r.Company)
+                .Include(r => r.InvoiceItems)
+                .Where(c => c.Id == id)
+                .ProjectTo<InvoiceDto>(_mapper.ConfigurationProvider)
+                .FirstOrDefault();
+
+
+            var result = _mapper.Map<InvoiceDto>(invoice);
+
+            return result;
+        }
+
+        public List<InvoiceDto> GetAll()
+        {
+            var invoices = _dbContext
+                .Invoices
+                .Include(c => c.Contractor)
+                .Include(c => c.Company)
+                .Include(c => c.InvoiceItems)
+                .ToList();
+
+            if (invoices is null)
+            {
+                return null;
+            }
+
+            var result = _mapper.Map<List<InvoiceDto>>(invoices);
+
+            return result;
+        }
+        public async Task<bool> DeleteInvoice(int id)
+        {
+            var invoice = _dbContext
+                .Invoices
+                .FirstOrDefault(p => p.Id == id);
+
+            if (invoice is null) return false;
+
+            _dbContext.Invoices.Remove(invoice);
+            await _dbContext.SaveChangesAsync();
+
+            return true;
+        }
         public async Task<int> CreateInvoice(CreateInvoiceDto createInvoiceDto)
         {
 
@@ -85,95 +163,7 @@ namespace InvoiceAPI.Services
 
             return invoice.Id;
         }
-        public async Task<bool> DeleteIncvoice(int id)
-        {
-            var invoice = _dbContext
-                .Invoices
-                .FirstOrDefault(p => p.Id == id);
 
-            if (invoice is null) return false;
-
-            _dbContext.Invoices.Remove(invoice);
-            await _dbContext.SaveChangesAsync();
-
-            return true;
-        }
-
-        public List<InvoiceDto> GetAllByCompanyId(int id)
-        {
-            var invoices = _dbContext
-               .Invoices
-               .Include(r => r.Contractor)
-               .Include(r => r.Company)
-               .Include(r => r.InvoiceItems)
-               .Where(c => c.CompanyId == id);
-
-            if (invoices is null)
-            {
-                return null;
-            }
-
-            var result = _mapper.Map<List<InvoiceDto>>(invoices);
-
-            return result;
-        }
-
-        public List<InvoiceDto> GetAllByContractorId(int id)
-        {
-            var invoices = _dbContext
-               .Invoices
-               .Include(r => r.Contractor)
-               .Include(r => r.Company)
-               .Include(r => r.InvoiceItems)
-               .Where(c => c.ContractorId == id);
-
-            if (invoices is null)
-            {
-                return null;
-            }
-
-            var result = _mapper.Map<List<InvoiceDto>>(invoices);
-
-            return result;
-        }
-
-        public InvoiceDto GetById(int id)
-        {
-            var invoice = _dbContext
-                .Invoices
-                .Include(r => r.Contractor)
-                .Include(r => r.Company)
-                .Include(r => r.InvoiceItems)
-                .Where(c => c.Id == id);
-
-            if (invoice is null)
-            {
-                return null;
-            }
-
-            var result = _mapper.Map<InvoiceDto>(invoice);
-
-            return result;
-        }
-
-        public List<InvoiceDto> GetAll()
-        {
-            var invoices = _dbContext
-                .Invoices
-                .Include(c => c.Contractor)
-                .Include(c => c.Company)
-                .Include(c => c.InvoiceItems)
-                .ToList();
-
-            if (invoices is null)
-            {
-                return null;
-            }
-
-            var result = _mapper.Map<List<InvoiceDto>>(invoices);
-
-            return result;
-        }
 
 
 

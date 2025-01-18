@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using InvoiceAPI.DtoModels.CompanyModel;
 using InvoiceAPI.Entities;
 using InvoiceAPI.Models.CompanyModel;
 using InvoiceAPI.Persistance;
@@ -74,6 +75,32 @@ namespace InvoiceAPI.Services
             if (company is null) return false;
 
             _dbContext.Companies.Remove(company);
+            await _dbContext.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<bool> UpdateCompany(int id, UpdateCompanyDto dto)
+        {
+            var company = _dbContext
+                .Companies
+                .Include(c => c.Address)
+                .Include(c => c.Contact)
+                .FirstOrDefault(c => c.Id == id);
+
+            if (company is null) return false;
+
+            company.Name = dto.Name ?? company.Name;
+
+            company.Address.AddressLine1 = dto.AddressLine1 ?? company.Address.AddressLine1;
+            company.Address.AddressLine2 = dto.AddressLine2 ?? company.Address.AddressLine2;
+            company.Address.PostalCode = dto.PostalCode ?? company.Address.PostalCode;
+            company.Address.City = dto.City ?? company.Address.City;
+
+            company.Contact.EmailAddress = dto.EmailAddress ?? company.Contact.EmailAddress;
+            company.Contact.Phone = dto.Phone ?? company.Contact.Phone;
+
+
             await _dbContext.SaveChangesAsync();
 
             return true;

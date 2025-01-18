@@ -11,7 +11,6 @@ namespace InvoiceAPI.Models.CompanyModel
         public required string AddressLine2 { get; set; }
         public required string City { get; set; }
         public required string PostalCode { get; set; }
-        public required string Country { get; set; }
         public required string Phone { get; set; }
         public required string EmailAddress { get; set; }
 

@@ -37,7 +37,7 @@ namespace InvoiceAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            var id = _productService.CreateProduct(dto);
+            var id = await _productService.CreateProduct(dto);
 
             return Created($"product/{id}", null);
         }

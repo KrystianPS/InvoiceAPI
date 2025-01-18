@@ -1,6 +1,6 @@
 ﻿using InvoiceAPI.DtoModels.CompanyModel;
+using InvoiceAPI.DtoModels.ContractorModel;
 using InvoiceAPI.DtoModels.InvoiceModel;
-using InvoiceAPI.Models.ContractorModel;
 
 namespace InvoiceAPI.Models.InvoiceModel
 {
@@ -17,8 +17,8 @@ namespace InvoiceAPI.Models.InvoiceModel
 
         public int InvoiceItemsCount => InvoiceItems.Count;
 
-        public CompanySummaryDto Company { get; set; }
-        public ContractorDto Contractor { get; set; }
+        public CompanyForInvoiceDto Company { get; set; }
+        public ContractorForInvoiceDto Contractor { get; set; }
         public List<InvoiceItemDto> InvoiceItems { get; set; }
 
     }

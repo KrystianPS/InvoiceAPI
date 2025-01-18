@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using InvoiceAPI.DtoModels.CompanyModel;
 using InvoiceAPI.DtoModels.InvoiceModel;
 using InvoiceAPI.Entities;
 using InvoiceAPI.Models.InvoiceModel;
@@ -17,17 +16,9 @@ namespace InvoiceAPI.MappingProfiles
                 .ForMember(m => m.InvoiceItems, s => s.MapFrom(ent => ent.InvoiceItems))
                 .ReverseMap();
 
+
             CreateMap<InvoiceItem, InvoiceItemDto>().ReverseMap();
 
-            //CreateMap<Contractor, ContractorDto>().ReverseMap();
-
-            CreateMap<Company, CompanySummaryDto>()
-              .ForMember(m => m.AddressLine1, c => c.MapFrom(s => s.Address.AddressLine1))
-              .ForMember(m => m.AddressLine2, c => c.MapFrom(s => s.Address.AddressLine2))
-              .ForMember(m => m.PostalCode, c => c.MapFrom(s => s.Address.PostalCode))
-              .ForMember(m => m.City, c => c.MapFrom(s => s.Address.City))
-              .ForMember(m => m.EmailAddress, c => c.MapFrom(s => s.Contact.EmailAddress))
-              .ForMember(m => m.Phone, c => c.MapFrom(s => s.Contact.Phone));
 
         }
 

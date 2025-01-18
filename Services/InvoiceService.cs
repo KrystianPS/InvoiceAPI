@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using InvoiceAPI.DtoModels.InvoiceModel;
 using InvoiceAPI.Entities;
 using InvoiceAPI.Models.InvoiceModel;
 using InvoiceAPI.Persistance;
@@ -36,13 +37,17 @@ namespace InvoiceAPI.Services
         public List<InvoiceDto> GetAllByContractorId(int id)
         {
             var invoices = _dbContext
-               .Invoices
-               .Include(r => r.Contractor)
-               .Include(r => r.Company)
-               .Include(r => r.InvoiceItems)
-               .Where(c => c.ContractorId == id)
-               .ProjectTo<InvoiceDto>(_mapper.ConfigurationProvider)
-               .ToList();
+                .Invoices
+                .Include(c => c.Contractor)
+                .Include(c => c.Contractor.Address)
+                .Include(c => c.Contractor.Contact)
+                .Include(c => c.Company)
+                .Include(c => c.Company.Address)
+                .Include(c => c.Company.Contact)
+                .Include(r => r.InvoiceItems)
+                .Where(c => c.ContractorId == id)
+                .ProjectTo<InvoiceDto>(_mapper.ConfigurationProvider)
+                .ToList();
 
             return invoices;
         }
@@ -51,8 +56,12 @@ namespace InvoiceAPI.Services
         {
             var invoice = _dbContext
                 .Invoices
-                .Include(r => r.Contractor)
-                .Include(r => r.Company)
+                .Include(c => c.Contractor)
+                .Include(c => c.Contractor.Address)
+                .Include(c => c.Contractor.Contact)
+                .Include(c => c.Company)
+                .Include(c => c.Company.Address)
+                .Include(c => c.Company.Contact)
                 .Include(r => r.InvoiceItems)
                 .Where(c => c.Id == id)
                 .ProjectTo<InvoiceDto>(_mapper.ConfigurationProvider)
@@ -69,9 +78,15 @@ namespace InvoiceAPI.Services
             var invoices = _dbContext
                 .Invoices
                 .Include(c => c.Contractor)
+                .Include(c => c.Contractor.Address)
+                .Include(c => c.Contractor.Contact)
                 .Include(c => c.Company)
+                .Include(c => c.Company.Address)
+                .Include(c => c.Company.Contact)
                 .Include(c => c.InvoiceItems)
                 .ToList();
+
+
 
             if (invoices is null)
             {
@@ -163,6 +178,121 @@ namespace InvoiceAPI.Services
 
             return invoice.Id;
         }
+
+
+        public async Task<bool> UpdateInvoice(int id, UpdateInvoiceDto updateInvoiceDto)
+        {
+            var invoice = _dbContext
+               .Invoices
+               .Include(c => c.InvoiceItems)
+               .FirstOrDefault(c => c.Id == id);
+
+            if (invoice is null)
+            {
+                return false;
+            }
+
+
+
+            //if not null update data
+            invoice.InvoiceNumber = updateInvoiceDto.InvoiceNumber ?? invoice.InvoiceNumber;
+            invoice.DueDate = updateInvoiceDto.DueDate ?? invoice.DueDate;
+            invoice.InvoiceNote = updateInvoiceDto.InvoiceNote ?? invoice.InvoiceNote;
+            invoice.ContractorId = updateInvoiceDto.ContractorId ?? invoice.ContractorId;
+
+
+
+            //add new 
+            if (updateInvoiceDto.ItemsToAdd != null && updateInvoiceDto.ItemsToAdd.Any())
+            {
+                foreach (var itemToAdd in updateInvoiceDto.ItemsToAdd)
+                {
+                    var product = _dbContext.Products.FirstOrDefault(p => p.Id == itemToAdd.ProductId);
+                    if (product == null)
+                    {
+                        throw new ArgumentException($"Product with ID {itemToAdd.ProductId} not found.");
+                    }
+
+                    var itemPriceNet = product.UnitPriceNet * itemToAdd.Quantity;
+                    var itemVatAmount = itemPriceNet * itemToAdd.VatRate / 100;
+                    var itemPriceGross = itemPriceNet + itemVatAmount;
+
+                    var newItem = new InvoiceItem
+                    {
+                        ProductId = itemToAdd.ProductId,
+                        Quantity = itemToAdd.Quantity,
+                        VatRate = itemToAdd.VatRate,
+                        ItemPriceNet = itemPriceNet,
+                        ItemVatAmount = itemVatAmount,
+                        ItemPriceGross = itemPriceGross
+                    };
+                    invoice.InvoiceItems.Add(newItem);
+                }
+                await _dbContext.SaveChangesAsync();
+            }
+
+
+
+            //edit
+            if (updateInvoiceDto.ItemsToAdd != null && updateInvoiceDto.ItemsToAdd.Any())
+            {
+                foreach (var itemToAdd in updateInvoiceDto.ItemsToAdd)
+                {
+                    var product = await _dbContext.Products.FindAsync(itemToAdd.ProductId);
+                    if (product == null)
+                    {
+                        throw new ArgumentException($"Product with ID {itemToAdd.ProductId} not found.");
+                    }
+
+                    var itemPriceNet = product.UnitPriceNet * itemToAdd.Quantity;
+                    var itemVatAmount = itemPriceNet * itemToAdd.VatRate / 100;
+                    var itemPriceGross = itemPriceNet + itemVatAmount;
+
+                    var newItem = new InvoiceItem
+                    {
+                        ProductId = itemToAdd.ProductId,
+                        Quantity = itemToAdd.Quantity,
+                        VatRate = itemToAdd.VatRate,
+                        ItemPriceNet = itemPriceNet,
+                        ItemVatAmount = itemVatAmount,
+                        ItemPriceGross = itemPriceGross
+                    };
+
+                    invoice.InvoiceItems.Add(newItem);
+                }
+
+                // Zapisanie zmian po dodaniu nowych pozycji
+                await _dbContext.SaveChangesAsync();
+            }
+
+            //delete item by id 
+            if (updateInvoiceDto.ItemsToDelete != null && updateInvoiceDto.ItemsToDelete.Any())
+            {
+                invoice.InvoiceItems.RemoveAll(i => updateInvoiceDto.ItemsToDelete.Contains(i.Id));
+
+                await _dbContext.SaveChangesAsync();
+            }
+
+
+
+            var totalNet = invoice.InvoiceItems.Sum(i => i.ItemPriceNet);
+            var totalVat = invoice.InvoiceItems.Sum(i => i.ItemVatAmount);
+            var totalGross = totalNet + totalVat;
+
+            // Przypisanie obliczonych wartości do faktury
+            invoice.TotalNet = totalNet;
+            invoice.TotalVatAmount = totalVat;
+            invoice.TotalGross = totalGross;
+
+
+
+            _dbContext.Invoices.Update(invoice);
+            await _dbContext.SaveChangesAsync();
+
+            return true;
+
+        }
+
 
 
 

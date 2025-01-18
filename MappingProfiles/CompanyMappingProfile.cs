@@ -18,16 +18,10 @@ namespace InvoiceAPI.MappingProfiles
                .ForMember(m => m.EmailAddress, c => c.MapFrom(s => s.Contact.EmailAddress))
                .ForMember(m => m.Phone, c => c.MapFrom(s => s.Contact.Phone));
 
-            CreateMap<Company, CompanySummaryDto>()
-               .ForMember(m => m.AddressLine1, c => c.MapFrom(s => s.Address.AddressLine1))
-               .ForMember(m => m.AddressLine2, c => c.MapFrom(s => s.Address.AddressLine2))
-               .ForMember(m => m.PostalCode, c => c.MapFrom(s => s.Address.PostalCode))
-               .ForMember(m => m.City, c => c.MapFrom(s => s.Address.City))
-               .ForMember(m => m.EmailAddress, c => c.MapFrom(s => s.Contact.EmailAddress))
-               .ForMember(m => m.Phone, c => c.MapFrom(s => s.Contact.Phone));
 
             CreateMap<Contractor, ContractorSummaryDto>()
                  .ForMember(m => m.RelatedCompanyId, c => c.MapFrom(s => s.CompanyId));
+
 
             CreateMap<CreateCompanyDto, Company>()
                 .ForMember(m => m.Address, c => c.MapFrom(dto => new CompanyAddressDetails
@@ -43,6 +37,14 @@ namespace InvoiceAPI.MappingProfiles
                     EmailAddress = dto.Contact.EmailAddress,
                     Phone = dto.Contact.Phone
                 }));
+
+            CreateMap<Company, CompanyForInvoiceDto>()
+                .ForMember(m => m.AddressLine1, c => c.MapFrom(s => s.Address.AddressLine1))
+                .ForMember(m => m.AddressLine2, c => c.MapFrom(s => s.Address.AddressLine2))
+                .ForMember(m => m.PostalCode, c => c.MapFrom(s => s.Address.PostalCode))
+                .ForMember(m => m.City, c => c.MapFrom(s => s.Address.City))
+                .ForMember(m => m.EmailAddress, c => c.MapFrom(s => s.Contact.EmailAddress))
+                .ForMember(m => m.Phone, c => c.MapFrom(s => s.Contact.Phone));
         }
     }
 }

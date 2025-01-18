@@ -1,4 +1,5 @@
-﻿using InvoiceAPI.Models.InvoiceModel;
+﻿using InvoiceAPI.DtoModels.InvoiceModel;
+using InvoiceAPI.Models.InvoiceModel;
 using InvoiceAPI.Persistance;
 using InvoiceAPI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -89,5 +90,24 @@ namespace InvoiceAPI.Controllers
             }
             return Ok(invoices);
         }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Update([FromRoute] int id, [FromBody] UpdateInvoiceDto dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var isUpdated = await _invoiceService.UpdateInvoice(id, dto);
+
+            if (!isUpdated)
+            {
+                return NotFound();
+            }
+            return Ok($"Company with id:{id} has been updated");
+
+        }
+
     }
 }

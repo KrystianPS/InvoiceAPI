@@ -1,4 +1,5 @@
-﻿using InvoiceAPI.Models.CompanyModel;
+﻿using InvoiceAPI.DtoModels.CompanyModel;
+using InvoiceAPI.Models.CompanyModel;
 using InvoiceAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -55,6 +56,24 @@ namespace InvoiceAPI.Controllers
                 return NotFound();
             }
             return Ok($"Company with id:{id} deleted");
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Update([FromRoute] int id, [FromBody] UpdateCompanyDto dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var isUpdated = await _companyService.UpdateCompany(id, dto);
+
+            if (!isUpdated)
+            {
+                return NotFound();
+            }
+            return Ok($"Company with id:{id} has been updated");
+
         }
     }
 }

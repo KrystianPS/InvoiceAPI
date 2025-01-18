@@ -1,9 +1,8 @@
-﻿using InvoiceAPI.Models.ContractorModel;
-
-namespace InvoiceAPI.Models.CompanyModel
+﻿namespace InvoiceAPI.DtoModels.CompanyModel
 {
-    public class CompanyDto
+    public class CompanyForInvoiceDto
     {
+
         public int Id { get; set; }
         public required string Name { get; set; }
         public required int TIN { get; set; }
@@ -13,7 +12,5 @@ namespace InvoiceAPI.Models.CompanyModel
         public required string PostalCode { get; set; }
         public required string Phone { get; set; }
         public required string EmailAddress { get; set; }
-
-        public List<ContractorSummaryDto> Contractors { get; set; }
     }
 }

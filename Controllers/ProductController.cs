@@ -1,4 +1,5 @@
-﻿using InvoiceAPI.Entities;
+﻿using InvoiceAPI.DtoModels.ProductModel;
+using InvoiceAPI.Entities;
 using InvoiceAPI.Models;
 using InvoiceAPI.Models.ProductModel;
 using InvoiceAPI.Services;
@@ -36,7 +37,7 @@ namespace InvoiceAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            var id = _productService.CreateProduct(dto);
+            var id = await _productService.CreateProduct(dto);
 
             return Created($"product/{id}", null);
         }
@@ -51,6 +52,23 @@ namespace InvoiceAPI.Controllers
                 return NotFound();
             }
             return Ok($"Product with id:{id} deleted");
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Update([FromRoute] int id, [FromBody] UpdateProductDto dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var isUpdated = await _productService.UpdateProduct(id, dto);
+
+            if (!isUpdated)
+            {
+                return NotFound();
+            }
+            return Ok($"Product with id:{id} updated");
         }
 
 

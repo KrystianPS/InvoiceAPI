@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using InvoiceAPI.DtoModels.CompanyModel;
 using InvoiceAPI.DtoModels.InvoiceModel;
 using InvoiceAPI.Entities;
 using InvoiceAPI.Models.InvoiceModel;
@@ -16,6 +15,7 @@ namespace InvoiceAPI.MappingProfiles
                 .ForMember(m => m.Contractor, s => s.MapFrom(ent => ent.Contractor))
                 .ForMember(m => m.InvoiceItems, s => s.MapFrom(ent => ent.InvoiceItems))
                 .ReverseMap();
+
 
             CreateMap<InvoiceItem, InvoiceItemDto>().ReverseMap();
 

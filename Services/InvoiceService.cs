@@ -202,38 +202,7 @@ namespace InvoiceAPI.Services
 
 
 
-            //add new 
-            if (updateInvoiceDto.ItemsToAdd != null && updateInvoiceDto.ItemsToAdd.Any())
-            {
-                foreach (var itemToAdd in updateInvoiceDto.ItemsToAdd)
-                {
-                    var product = _dbContext.Products.FirstOrDefault(p => p.Id == itemToAdd.ProductId);
-                    if (product == null)
-                    {
-                        throw new ArgumentException($"Product with ID {itemToAdd.ProductId} not found.");
-                    }
-
-                    var itemPriceNet = product.UnitPriceNet * itemToAdd.Quantity;
-                    var itemVatAmount = itemPriceNet * itemToAdd.VatRate / 100;
-                    var itemPriceGross = itemPriceNet + itemVatAmount;
-
-                    var newItem = new InvoiceItem
-                    {
-                        ProductId = itemToAdd.ProductId,
-                        Quantity = itemToAdd.Quantity,
-                        VatRate = itemToAdd.VatRate,
-                        ItemPriceNet = itemPriceNet,
-                        ItemVatAmount = itemVatAmount,
-                        ItemPriceGross = itemPriceGross
-                    };
-                    invoice.InvoiceItems.Add(newItem);
-                }
-                await _dbContext.SaveChangesAsync();
-            }
-
-
-
-            //edit
+            //add
             if (updateInvoiceDto.ItemsToAdd != null && updateInvoiceDto.ItemsToAdd.Any())
             {
                 foreach (var itemToAdd in updateInvoiceDto.ItemsToAdd)

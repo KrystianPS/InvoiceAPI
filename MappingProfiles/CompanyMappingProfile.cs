@@ -27,7 +27,7 @@ namespace InvoiceAPI.MappingProfiles
                .ForMember(m => m.Phone, c => c.MapFrom(s => s.Contact.Phone));
 
             CreateMap<Contractor, ContractorSummaryDto>()
-                 .ForMember(m => m.RelatedCompanyId, c => c.MapFrom(s => s.CompanyId));
+                .ForMember(m => m.RelatedCompanyId, c => c.MapFrom(s => s.CompanyId));
 
             CreateMap<CreateCompanyDto, Company>()
                 .ForMember(m => m.Address, c => c.MapFrom(dto => new CompanyAddressDetails

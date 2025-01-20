@@ -11,7 +11,7 @@ namespace InvoiceAPI.Extensions
         public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<InvoiceAPIDbContext>(options => options.UseSqlServer(
-                configuration.GetConnectionString("LocalDBDevelopmentConnectionString")));
+                configuration.GetConnectionString("Dev")));
 
 
             services.AddScoped<DatabaseSeeder>();

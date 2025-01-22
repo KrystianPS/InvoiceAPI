@@ -11,19 +11,24 @@ namespace InvoiceAPI.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
-        public ProductController(IProductService productService)
+        private readonly ILogger<ProductController> _logger;
+
+        public ProductController(IProductService productService, ILogger<ProductController> logger)
         {
             _productService = productService;
+            _logger = logger;
         }
         [HttpGet("all")]
         public ActionResult<List<ProductDto>> GetAll()
         {
+            _logger.LogInformation("Get all products query invoked");
             var products = _productService.GetAll();
             return Ok(products);
         }
         [HttpGet("{id}")]
         public ActionResult<List<ProductDto>> GetById(int id)
         {
+            _logger.LogInformation("Get by id:{id} product query invoked", id);
             var product = _productService.GetById(id);
             return Ok(product);
         }
@@ -31,9 +36,10 @@ namespace InvoiceAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Product>> Create([FromBody] CreateProductDto dto)
         {
-
+            _logger.LogInformation("Create product query invoked");
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("Dto model is not valid");
                 return BadRequest(ModelState);
             }
 
@@ -49,6 +55,7 @@ namespace InvoiceAPI.Controllers
 
             if (!isDeleted)
             {
+                _logger.LogWarning("Product with id:{id} is not deleted", id);
                 return NotFound();
             }
             return Ok($"Product with id:{id} deleted");
@@ -59,6 +66,7 @@ namespace InvoiceAPI.Controllers
         {
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("Update model provided is not valid");
                 return BadRequest(ModelState);
             }
 
@@ -66,6 +74,7 @@ namespace InvoiceAPI.Controllers
 
             if (!isUpdated)
             {
+                _logger.LogWarning("Product with id:{id} is not updated", id);
                 return NotFound();
             }
             return Ok($"Product with id:{id} updated");

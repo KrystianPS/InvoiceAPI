@@ -12,21 +12,25 @@ namespace InvoiceAPI.Services
     {
         private readonly InvoiceAPIDbContext _dbContext;
         private readonly IMapper _mapper;
+        private readonly ILogger<ProductService> _logger;
 
-        public ProductService(InvoiceAPIDbContext dbContext, IMapper mapper)
+        public ProductService(InvoiceAPIDbContext dbContext, IMapper mapper, ILogger<ProductService> logger)
         {
             _dbContext = dbContext;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public ProductDto GetById(int id)
         {
+            _logger.LogInformation("---Get Product with id:{id} query invoked---", id);
             var product = _dbContext.Products
                 .Include(c => c.ProductCategory)
                 .FirstOrDefault(c => c.Id == id);
 
             if (product is null)
             {
+
                 return null;
             }
 
@@ -36,6 +40,7 @@ namespace InvoiceAPI.Services
 
         public List<ProductDto> GetAll()
         {
+            _logger.LogInformation("---Get All Products query invoked---");
             var products = _dbContext.Products
                 .ToList();
             if (products is null)
@@ -49,18 +54,19 @@ namespace InvoiceAPI.Services
 
         public async Task<int> CreateProduct(CreateProductDto dto)
         {
+            _logger.LogInformation("---Create product query invoked---");
             var product = _mapper.Map<Product>(dto);
 
 
             if (!string.IsNullOrEmpty(dto.ProductCategoryName))
             {
-
+                _logger.LogInformation("---Product Category is null---");
                 var category = _dbContext.ProductCategories
                     .FirstOrDefault(c => c.Name == dto.ProductCategoryName);
 
                 if (category != null)
                 {
-
+                    _logger.LogInformation("---Product category table is null---");
                     product.ProductCategoryId = category.Id;
                     product.ProductCategory = category;
                 }
@@ -80,12 +86,13 @@ namespace InvoiceAPI.Services
 
             _dbContext.Products.Add(product);
             await _dbContext.SaveChangesAsync();
-
+            _logger.LogInformation("---Product Created with id:{Id}---", product.Id);
             return product.Id;
         }
 
         public async Task<bool> DeleteProduct(int id)
         {
+            _logger.LogInformation("---Delete product with id:{id} invoked---", id);
             var product = _dbContext
                 .Products
                 .FirstOrDefault(p => p.Id == id);
@@ -100,6 +107,7 @@ namespace InvoiceAPI.Services
 
         public async Task<bool> UpdateProduct(int id, UpdateProductDto dto)
         {
+            _logger.LogInformation("---Update product with id:{id} invoked---", id);
             var product = _dbContext
                 .Products
                 .FirstOrDefault(p => p.Id == id);

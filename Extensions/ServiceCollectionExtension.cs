@@ -28,11 +28,8 @@ namespace InvoiceAPI.Extensions
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IProductCategoryService, ProductCategoryService>();
             services.AddScoped<IInvoiceService, InvoiceService>();
-
-
-
-
         }
+
 
     }
 }

@@ -35,7 +35,7 @@ namespace InvoiceAPI.Services
             var category = _dbContext.ProductCategories
                 .Include(x => x.Products)
                 .Include(pc => pc.Products)
-                .FirstOrDefault();
+                .FirstOrDefault(pc => pc.Id == id);
             if (category is null)
             {
                 return null;

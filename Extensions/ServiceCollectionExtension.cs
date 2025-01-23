@@ -1,4 +1,5 @@
-﻿using InvoiceAPI.Persistance;
+﻿using InvoiceAPI.Middleware;
+using InvoiceAPI.Persistance;
 using InvoiceAPI.Seeders;
 using InvoiceAPI.Seeders.EntitySeeders;
 using InvoiceAPI.Services;
@@ -28,6 +29,8 @@ namespace InvoiceAPI.Extensions
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IProductCategoryService, ProductCategoryService>();
             services.AddScoped<IInvoiceService, InvoiceService>();
+
+            services.AddScoped<ErrorHandlingMiddleware>();
         }
 
 

@@ -1,4 +1,5 @@
 using InvoiceAPI.Extensions;
+using InvoiceAPI.Middleware;
 using Serilog;
 
 
@@ -28,6 +29,7 @@ var app = builder.Build();
 
 //using var scope = app.Services.CreateScope();
 //var services = scope.ServiceProvider;
+app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 

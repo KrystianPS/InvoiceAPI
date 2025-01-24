@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using InvoiceAPI.DtoModels.ContractorModel;
 using InvoiceAPI.Entities;
+using InvoiceAPI.Exceptions;
 using InvoiceAPI.Models.ContractorModel;
 using InvoiceAPI.Persistance;
 using Microsoft.EntityFrameworkCore;
@@ -25,10 +26,7 @@ namespace InvoiceAPI.Services
                .Include(r => r.Contact)
                .FirstOrDefault(c => c.Id == id);
 
-            if (contractor is null)
-            {
-                return null;
-            }
+            if (contractor is null) throw new NotFoundException("Contractor not found");
 
             var result = _mapper.Map<ContractorDto>(contractor);
 
@@ -43,10 +41,7 @@ namespace InvoiceAPI.Services
                 .Include(c => c.Contact)
                 .ToList();
 
-            if (contractors is null)
-            {
-                return null;
-            }
+            if (contractors is null) throw new NotFoundException("Contractor not found");
 
             var result = _mapper.Map<List<ContractorDto>>(contractors);
 
@@ -62,21 +57,20 @@ namespace InvoiceAPI.Services
 
             return contractor.Id;
         }
-        public async Task<bool> DeleteContractor(int id)
+        public void DeleteContractor(int id)
         {
             var contractor = _dbContext
                 .Contractors
                 .FirstOrDefault(c => c.Id == id);
 
-            if (contractor is null) return false;
+            if (contractor is null) throw new NotFoundException("Contractor not found");
 
             _dbContext.Contractors.Remove(contractor);
-            await _dbContext.SaveChangesAsync();
+            _dbContext.SaveChanges();
 
-            return true;
         }
 
-        public bool UpdateContractor(int id, UpdateContractorDto dto)
+        public void UpdateContractor(int id, UpdateContractorDto dto)
         {
             var contractor = _dbContext
                 .Contractors
@@ -84,7 +78,7 @@ namespace InvoiceAPI.Services
                 .Include(c => c.Contact)
                 .FirstOrDefault(c => c.Id == id);
 
-            if (contractor is null) return false;
+            if (contractor is null) throw new NotFoundException("Contractor not found");
 
             contractor.Name = dto.Name ?? contractor.Name;
             contractor.Address.AddressLine1 = dto.AddressLine1 ?? contractor.Address.AddressLine1;
@@ -97,8 +91,6 @@ namespace InvoiceAPI.Services
 
 
             _dbContext.SaveChanges();
-
-            return true;
         }
 
 

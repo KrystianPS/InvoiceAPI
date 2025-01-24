@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using InvoiceAPI.DtoModels.ProductModel;
 using InvoiceAPI.Entities;
+using InvoiceAPI.Exceptions;
 using InvoiceAPI.Models;
 using InvoiceAPI.Models.ProductModel;
 using InvoiceAPI.Persistance;
@@ -30,8 +31,7 @@ namespace InvoiceAPI.Services
 
             if (product is null)
             {
-
-                return null;
+                throw new NotFoundException("Product not found");
             }
 
             var productDto = _mapper.Map<ProductDto>(product);
@@ -45,7 +45,7 @@ namespace InvoiceAPI.Services
                 .ToList();
             if (products is null)
             {
-                return null;
+                throw new NotFoundException("Products not found");
             }
 
             var productsDtos = _mapper.Map<List<ProductDto>>(products);
@@ -90,29 +90,27 @@ namespace InvoiceAPI.Services
             return product.Id;
         }
 
-        public async Task<bool> DeleteProduct(int id)
+        public void DeleteProduct(int id)
         {
             _logger.LogInformation("---Delete product with id:{id} invoked---", id);
             var product = _dbContext
                 .Products
                 .FirstOrDefault(p => p.Id == id);
 
-            if (product is null) return false;
+            if (product is null) throw new NotFoundException("Product not found");
 
             _dbContext.Products.Remove(product);
-            await _dbContext.SaveChangesAsync();
-
-            return true;
+            _dbContext.SaveChanges();
         }
 
-        public async Task<bool> UpdateProduct(int id, UpdateProductDto dto)
+        public void UpdateProduct(int id, UpdateProductDto dto)
         {
             _logger.LogInformation("---Update product with id:{id} invoked---", id);
             var product = _dbContext
                 .Products
                 .FirstOrDefault(p => p.Id == id);
 
-            if (product is null) return false;
+            if (product is null) throw new NotFoundException("Product not found");
 
             if (dto.UnitPriceNet != product.UnitPriceNet)
             {
@@ -124,10 +122,7 @@ namespace InvoiceAPI.Services
                 product.Description = dto.Description;
             };
 
-            await _dbContext.SaveChangesAsync();
-
-            return true;
-
+            _dbContext.SaveChanges();
         }
 
     }

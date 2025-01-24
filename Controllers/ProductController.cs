@@ -49,20 +49,15 @@ namespace InvoiceAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete([FromRoute] int id)
+        public ActionResult Delete([FromRoute] int id)
         {
-            var isDeleted = await _productService.DeleteProduct(id);
+            _productService.DeleteProduct(id);
 
-            if (!isDeleted)
-            {
-                _logger.LogWarning("Product with id:{id} is not deleted", id);
-                return NotFound();
-            }
             return Ok($"Product with id:{id} deleted");
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> Update([FromRoute] int id, [FromBody] UpdateProductDto dto)
+        public ActionResult Update([FromRoute] int id, [FromBody] UpdateProductDto dto)
         {
             if (!ModelState.IsValid)
             {
@@ -70,13 +65,8 @@ namespace InvoiceAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            var isUpdated = await _productService.UpdateProduct(id, dto);
+            _productService.UpdateProduct(id, dto);
 
-            if (!isUpdated)
-            {
-                _logger.LogWarning("Product with id:{id} is not updated", id);
-                return NotFound();
-            }
             return Ok($"Product with id:{id} updated");
         }
 

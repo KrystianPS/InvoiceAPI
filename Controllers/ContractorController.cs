@@ -18,9 +18,6 @@ namespace InvoiceAPI.Controllers
         public ActionResult<List<ContractorDto>> GetAll()
         {
             var contractors = _contractorService.GetAll();
-
-
-
             return Ok(contractors);
         }
 
@@ -28,7 +25,6 @@ namespace InvoiceAPI.Controllers
         public ActionResult<ContractorDto> GetById([FromRoute] int id)
         {
             var contractor = _contractorService.GetById(id);
-
             return Ok(contractor);
         }
 
@@ -41,38 +37,27 @@ namespace InvoiceAPI.Controllers
             }
 
             var id = _contractorService.CreateContractor(dto);
-
-
             return Created($"contractor/{id}", null);
 
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete([FromRoute] int id)
+        public ActionResult Delete([FromRoute] int id)
         {
-            var isDeleted = await _contractorService.DeleteContractor(id);
-
-            if (!isDeleted)
-            {
-                return NotFound();
-            }
+            _contractorService.DeleteContractor(id);
             return Ok($"Contractor with id:{id} deleted");
         }
 
         [HttpPut("{id}")]
         public ActionResult Update([FromRoute] int id, [FromBody] UpdateContractorDto dto)
         {
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var isUpdated = _contractorService.UpdateContractor(id, dto);
-
-            if (!isUpdated)
-            {
-                return NotFound();
-            }
+            _contractorService.UpdateContractor(id, dto);
             return Ok($"Contractor with id:{id} has been updated");
 
         }

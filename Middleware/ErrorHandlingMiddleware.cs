@@ -1,4 +1,6 @@
 ﻿
+using InvoiceAPI.Exceptions;
+
 namespace InvoiceAPI.Middleware
 {
     public class ErrorHandlingMiddleware : IMiddleware
@@ -16,6 +18,11 @@ namespace InvoiceAPI.Middleware
             try
             {
                 await next.Invoke(context);
+            }
+            catch (NotFoundException notFoundException)
+            {
+                context.Response.StatusCode = 404;
+                await context.Response.WriteAsync(notFoundException.Message);
             }
             catch (Exception ex)
             {

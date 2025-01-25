@@ -22,6 +22,7 @@ namespace InvoiceAPI.Controllers
         public ActionResult<List<CompanyDto>> GetAll()
         {
             var companies = _companyService.GetAll();
+
             return Ok(companies);
         }
 
@@ -47,31 +48,23 @@ namespace InvoiceAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete([FromRoute] int id)
+        public ActionResult Delete([FromRoute] int id)
         {
-            var isDeleted = await _companyService.DeleteCompany(id);
+            _companyService.DeleteCompany(id);
 
-            if (!isDeleted)
-            {
-                return NotFound();
-            }
             return Ok($"Company with id:{id} deleted");
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> Update([FromRoute] int id, [FromBody] UpdateCompanyDto dto)
+        public ActionResult Update([FromRoute] int id, [FromBody] UpdateCompanyDto dto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var isUpdated = await _companyService.UpdateCompany(id, dto);
+            _companyService.UpdateCompany(id, dto);
 
-            if (!isUpdated)
-            {
-                return NotFound();
-            }
             return Ok($"Company with id:{id} has been updated");
 
         }

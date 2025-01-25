@@ -12,11 +12,13 @@ namespace InvoiceAPI.Services
     {
         private readonly InvoiceAPIDbContext _dbContext;
         private readonly IMapper _mapper;
+        private readonly ILogger<ContractorService> _logger;
 
-        public ContractorService(InvoiceAPIDbContext dbContext, IMapper mapper)
+        public ContractorService(InvoiceAPIDbContext dbContext, IMapper mapper, ILogger<ContractorService> logger)
         {
             _dbContext = dbContext;
             _mapper = mapper;
+            _logger = logger;
         }
         public ContractorDto GetById(int id)
         {
@@ -24,9 +26,7 @@ namespace InvoiceAPI.Services
                .Contractors
                .Include(r => r.Address)
                .Include(r => r.Contact)
-               .FirstOrDefault(c => c.Id == id);
-
-            if (contractor is null) throw new NotFoundException("Contractor not found");
+               .FirstOrDefault(c => c.Id == id) ?? throw new NotFoundException($"Contractor with Id:{id}not found");
 
             var result = _mapper.Map<ContractorDto>(contractor);
 
@@ -39,9 +39,7 @@ namespace InvoiceAPI.Services
                 .Contractors
                 .Include(c => c.Address)
                 .Include(c => c.Contact)
-                .ToList();
-
-            if (contractors is null) throw new NotFoundException("Contractor not found");
+                .ToList() ?? throw new NotFoundException("No contractors found");
 
             var result = _mapper.Map<List<ContractorDto>>(contractors);
 
@@ -57,28 +55,25 @@ namespace InvoiceAPI.Services
 
             return contractor.Id;
         }
-        public void DeleteContractor(int id)
+        public async Task DeleteContractor(int id)
         {
             var contractor = _dbContext
                 .Contractors
-                .FirstOrDefault(c => c.Id == id);
-
-            if (contractor is null) throw new NotFoundException("Contractor not found");
+                .FirstOrDefault(c => c.Id == id) ?? throw new NotFoundException($"Contractor with Id:{id} not found");
 
             _dbContext.Contractors.Remove(contractor);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
 
         }
 
-        public void UpdateContractor(int id, UpdateContractorDto dto)
+        public async Task UpdateContractor(int id, UpdateContractorDto dto)
         {
             var contractor = _dbContext
                 .Contractors
                 .Include(c => c.Address)
                 .Include(c => c.Contact)
-                .FirstOrDefault(c => c.Id == id);
+                .FirstOrDefault(c => c.Id == id) ?? throw new NotFoundException($"Contractor with Id:{id} not found");
 
-            if (contractor is null) throw new NotFoundException("Contractor not found");
 
             contractor.Name = dto.Name ?? contractor.Name;
             contractor.Address.AddressLine1 = dto.AddressLine1 ?? contractor.Address.AddressLine1;
@@ -88,9 +83,9 @@ namespace InvoiceAPI.Services
             contractor.Address.Country = dto.Country ?? contractor.Address.Country;
             contractor.Contact.EmailAddress = dto.EmailAddress ?? contractor.Contact.EmailAddress;
             contractor.Contact.Phone = dto.Phone ?? contractor.Contact.Phone;
+            _logger.LogInformation($"Contractor with Id:{id} updated");
 
-
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
         }
 
 

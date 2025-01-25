@@ -10,13 +10,16 @@ namespace InvoiceAPI.Controllers
     public class ContractorController : ControllerBase
     {
         private readonly IContractorService _contractorService;
-        public ContractorController(IContractorService contractor)
+        private readonly ILogger<ContractorController> _logger;
+        public ContractorController(IContractorService contractor, ILogger<ContractorController> logger)
         {
             _contractorService = contractor;
+            _logger = logger;
         }
         [HttpGet("all")]
         public ActionResult<List<ContractorDto>> GetAll()
         {
+            _logger.LogInformation("Get all constractors query invoked");
             var contractors = _contractorService.GetAll();
             return Ok(contractors);
         }
@@ -24,6 +27,7 @@ namespace InvoiceAPI.Controllers
         [HttpGet("{id}")]
         public ActionResult<ContractorDto> GetById([FromRoute] int id)
         {
+            _logger.LogInformation($"Get constractor with Id:{id} query invoked");
             var contractor = _contractorService.GetById(id);
             return Ok(contractor);
         }
@@ -31,6 +35,7 @@ namespace InvoiceAPI.Controllers
         [HttpPost]
         public ActionResult Create([FromBody] CreateContractorDto dto)
         {
+            _logger.LogInformation($"Create constractor query invoked");
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -42,22 +47,24 @@ namespace InvoiceAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult Delete([FromRoute] int id)
+        public async Task<ActionResult> Delete([FromRoute] int id)
         {
-            _contractorService.DeleteContractor(id);
+            _logger.LogInformation($"Delete constractor with Id:{id} query invoked");
+            await _contractorService.DeleteContractor(id);
             return Ok($"Contractor with id:{id} deleted");
         }
 
         [HttpPut("{id}")]
-        public ActionResult Update([FromRoute] int id, [FromBody] UpdateContractorDto dto)
+        public async Task<ActionResult> Update([FromRoute] int id, [FromBody] UpdateContractorDto dto)
         {
+            _logger.LogInformation($"Update constractor with Id:{id} query invoked");
 
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _contractorService.UpdateContractor(id, dto);
+            await _contractorService.UpdateContractor(id, dto);
             return Ok($"Contractor with id:{id} has been updated");
 
         }

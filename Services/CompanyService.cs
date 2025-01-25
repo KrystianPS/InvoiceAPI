@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using InvoiceAPI.DtoModels.CompanyModel;
 using InvoiceAPI.Entities;
+using InvoiceAPI.Exceptions;
 using InvoiceAPI.Models.CompanyModel;
 using InvoiceAPI.Persistance;
 using Microsoft.EntityFrameworkCore;
@@ -11,27 +12,25 @@ namespace InvoiceAPI.Services
     {
         private readonly InvoiceAPIDbContext _dbContext;
         private readonly IMapper _mapper;
+        private readonly ILogger<CompanyService> _logger;
 
 
-        public CompanyService(InvoiceAPIDbContext dbContext, IMapper mapper)
+        public CompanyService(InvoiceAPIDbContext dbContext, IMapper mapper, ILogger<CompanyService> logger)
         {
             _dbContext = dbContext;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public List<CompanyDto> GetAll()
         {
+            _logger.LogInformation("Get all companies query invoked");
             var companies = _dbContext
                 .Companies
                 .Include(c => c.Address)
                 .Include(c => c.Contact)
                 .Include(c => c.Contractors)
-                .ToList();
-
-            if (companies is null)
-            {
-                return null;
-            }
+                .ToList() ?? throw new NotFoundException("Company not found");
 
             var companiesDtos = _mapper.Map<List<CompanyDto>>(companies);
             return companiesDtos;
@@ -39,16 +38,12 @@ namespace InvoiceAPI.Services
 
         public CompanyDto GetById(int id)
         {
+            _logger.LogInformation($"Get comapny by Id:{id} query invoked");
             var company = _dbContext.Companies
                 .Include(c => c.Address)
                 .Include(c => c.Contact)
                 .Include(c => c.Contractors)
-                .FirstOrDefault(c => c.Id == id);
-            if (company is null)
-            {
-                return null;
-            }
-
+                .FirstOrDefault(c => c.Id == id) ?? throw new NotFoundException($"Company with Id:{id} not found");
 
             var companyDto = _mapper.Map<CompanyDto>(company);
             return companyDto;
@@ -57,6 +52,7 @@ namespace InvoiceAPI.Services
 
         public async Task<int> CreateCompany(CreateCompanyDto dto)
         {
+            _logger.LogInformation("Create company query invoked");
             var company = _mapper.Map<Company>(dto);
 
             await _dbContext.Companies.AddAsync(company);
@@ -65,30 +61,27 @@ namespace InvoiceAPI.Services
             return company.Id;
         }
 
-        public async Task<bool> DeleteCompany(int id)
+        public async Task DeleteCompany(int id)
         {
-
+            _logger.LogInformation($"Delete company with id:{id} invoked");
             var company = _dbContext
                 .Companies
-                .FirstOrDefault(p => p.Id == id);
+                .FirstOrDefault(p => p.Id == id) ?? throw new NotFoundException($"Company with Id:{id} not found");
 
-            if (company is null) return false;
 
             _dbContext.Companies.Remove(company);
             await _dbContext.SaveChangesAsync();
-
-            return true;
         }
 
-        public async Task<bool> UpdateCompany(int id, UpdateCompanyDto dto)
+        public async Task UpdateCompany(int id, UpdateCompanyDto dto)
         {
+            _logger.LogInformation($"Update company Id:{id} query invoked");
             var company = _dbContext
                 .Companies
                 .Include(c => c.Address)
                 .Include(c => c.Contact)
-                .FirstOrDefault(c => c.Id == id);
+                .FirstOrDefault(c => c.Id == id) ?? throw new NotFoundException($"Company with Id:{id}not found");
 
-            if (company is null) return false;
 
             company.Name = dto.Name ?? company.Name;
 
@@ -102,8 +95,6 @@ namespace InvoiceAPI.Services
 
 
             await _dbContext.SaveChangesAsync();
-
-            return true;
         }
     }
 }

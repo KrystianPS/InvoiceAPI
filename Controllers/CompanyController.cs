@@ -9,12 +9,13 @@ namespace InvoiceAPI.Controllers
     public class CompanyController : ControllerBase
     {
         private readonly ICompanyService _companyService;
+        private readonly ILogger<CompanyController> _logger;
 
 
-        public CompanyController(ICompanyService companyService)
+        public CompanyController(ICompanyService companyService, ILogger<CompanyController> logger)
         {
             _companyService = companyService;
-
+            _logger = logger;
         }
 
         [HttpGet("all")]
@@ -22,6 +23,7 @@ namespace InvoiceAPI.Controllers
         public ActionResult<List<CompanyDto>> GetAll()
         {
             var companies = _companyService.GetAll();
+
             return Ok(companies);
         }
 
@@ -37,6 +39,7 @@ namespace InvoiceAPI.Controllers
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] CreateCompanyDto dto)
         {
+            _logger.LogInformation($"Create company query invoked");
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -49,30 +52,24 @@ namespace InvoiceAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete([FromRoute] int id)
         {
-            var isDeleted = await _companyService.DeleteCompany(id);
+            _logger.LogInformation($"Delete company with Id:{id} query invoked");
+            await _companyService.DeleteCompany(id);
 
-            if (!isDeleted)
-            {
-                return NotFound();
-            }
             return Ok($"Company with id:{id} deleted");
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult> Update([FromRoute] int id, [FromBody] UpdateCompanyDto dto)
         {
+            _logger.LogInformation($"Update company with Id:{id} query invoked");
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var isUpdated = await _companyService.UpdateCompany(id, dto);
+            await _companyService.UpdateCompany(id, dto);
 
-            if (!isUpdated)
-            {
-                return NotFound();
-            }
-            return Ok($"Company with id:{id} has been updated");
+            return Ok($"Company with id:{id} updated");
 
         }
     }

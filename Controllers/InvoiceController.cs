@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace InvoiceAPI.Controllers
 {
-    [Route("/invoice")]
+    [Route("api/invoice")]
+    [ApiController]
     public class InvoiceController : ControllerBase
     {
         private readonly IInvoiceService _invoiceService;
@@ -20,38 +21,6 @@ namespace InvoiceAPI.Controllers
         }
 
 
-        [HttpPost]
-        public async Task<ActionResult> Create([FromBody] CreateInvoiceDto dto)
-        {
-            _logger.LogInformation($"Create invoice query invoked");
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            try
-            {
-                var invoiceId = await _invoiceService.CreateInvoice(dto);
-                return Created($"invoice/{invoiceId}", null);
-            }
-            catch (ArgumentException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete([FromRoute] int id)
-        {
-            _logger.LogInformation($"Delete invoice with Id:{id} query invoked");
-            await _invoiceService.DeleteInvoice(id);
-
-            return Ok($"Invoice with id:{id} deleted");
-        }
 
 
         [HttpGet("all")]
@@ -94,19 +63,44 @@ namespace InvoiceAPI.Controllers
             return Ok(invoices);
         }
 
+        [HttpPost]
+        public async Task<ActionResult> Create([FromBody] CreateInvoiceDto dto)
+        {
+            _logger.LogInformation($"Create invoice query invoked");
+
+            try
+            {
+                var invoiceId = await _invoiceService.CreateInvoice(dto);
+                return Created($"invoice/{invoiceId}", null);
+            }
+            catch (ArgumentException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
         [HttpPut("{id}")]
         public async Task<ActionResult> Update([FromRoute] int id, [FromBody] UpdateInvoiceDto dto)
         {
             _logger.LogInformation($"Update invoice with Id:{id} query invoked");
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
 
             await _invoiceService.UpdateInvoice(id, dto);
 
             return Ok($"Company with id:{id} has been updated");
 
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete([FromRoute] int id)
+        {
+            _logger.LogInformation($"Delete invoice with Id:{id} query invoked");
+            await _invoiceService.DeleteInvoice(id);
+
+            return Ok($"Invoice with id:{id} deleted");
         }
 
     }

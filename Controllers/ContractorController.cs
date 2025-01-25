@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace InvoiceAPI.Controllers
 {
 
-    [Route("/contractor")]
+    [Route("api/contractor")]
+    [ApiController]
     public class ContractorController : ControllerBase
     {
         private readonly IContractorService _contractorService;
@@ -36,13 +37,19 @@ namespace InvoiceAPI.Controllers
         public ActionResult Create([FromBody] CreateContractorDto dto)
         {
             _logger.LogInformation($"Create constractor query invoked");
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
 
             var id = _contractorService.CreateContractor(dto);
             return Created($"contractor/{id}", null);
+
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Update([FromRoute] int id, [FromBody] UpdateContractorDto dto)
+        {
+            _logger.LogInformation($"Update constractor with Id:{id} query invoked");
+
+            await _contractorService.UpdateContractor(id, dto);
+            return Ok($"Contractor with id:{id} has been updated");
 
         }
 
@@ -52,21 +59,6 @@ namespace InvoiceAPI.Controllers
             _logger.LogInformation($"Delete constractor with Id:{id} query invoked");
             await _contractorService.DeleteContractor(id);
             return Ok($"Contractor with id:{id} deleted");
-        }
-
-        [HttpPut("{id}")]
-        public async Task<ActionResult> Update([FromRoute] int id, [FromBody] UpdateContractorDto dto)
-        {
-            _logger.LogInformation($"Update constractor with Id:{id} query invoked");
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            await _contractorService.UpdateContractor(id, dto);
-            return Ok($"Contractor with id:{id} has been updated");
-
         }
 
 

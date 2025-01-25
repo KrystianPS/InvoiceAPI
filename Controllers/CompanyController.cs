@@ -5,7 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace InvoiceAPI.Controllers
 {
-    [Route("/company")]
+    [Route("api/company")]
+    [ApiController]
     public class CompanyController : ControllerBase
     {
         private readonly ICompanyService _companyService;
@@ -40,10 +41,6 @@ namespace InvoiceAPI.Controllers
         public async Task<ActionResult> Create([FromBody] CreateCompanyDto dto)
         {
             _logger.LogInformation($"Create company query invoked");
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
 
             var id = await _companyService.CreateCompany(dto);
             return Created($"company/{id}", dto);
@@ -62,10 +59,6 @@ namespace InvoiceAPI.Controllers
         public async Task<ActionResult> Update([FromRoute] int id, [FromBody] UpdateCompanyDto dto)
         {
             _logger.LogInformation($"Update company with Id:{id} query invoked");
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
 
             await _companyService.UpdateCompany(id, dto);
 

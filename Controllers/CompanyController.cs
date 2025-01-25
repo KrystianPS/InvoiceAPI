@@ -50,7 +50,7 @@ namespace InvoiceAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete([FromRoute] int id)
+        public ActionResult Delete([FromRoute] int id)
         {
             _logger.LogInformation($"Delete company with Id:{id} query invoked");
             await _companyService.DeleteCompany(id);
@@ -59,7 +59,7 @@ namespace InvoiceAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> Update([FromRoute] int id, [FromBody] UpdateCompanyDto dto)
+        public ActionResult Update([FromRoute] int id, [FromBody] UpdateCompanyDto dto)
         {
             _logger.LogInformation($"Update company with Id:{id} query invoked");
             if (!ModelState.IsValid)

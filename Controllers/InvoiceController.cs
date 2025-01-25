@@ -44,12 +44,8 @@ namespace InvoiceAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete([FromRoute] int id)
         {
-            var isDeleted = await _invoiceService.DeleteInvoice(id);
+            await _invoiceService.DeleteInvoice(id);
 
-            if (!isDeleted)
-            {
-                return NotFound();
-            }
             return Ok($"Invoice with id:{id} deleted");
         }
 
@@ -62,6 +58,7 @@ namespace InvoiceAPI.Controllers
             var products = _invoiceService.GetAll();
             return Ok(products);
         }
+
         [HttpGet("{id}")]
         public ActionResult<List<InvoiceDto>> GetById([FromRoute] int id)
         {
@@ -99,12 +96,8 @@ namespace InvoiceAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            var isUpdated = await _invoiceService.UpdateInvoice(id, dto);
+            await _invoiceService.UpdateInvoice(id, dto);
 
-            if (!isUpdated)
-            {
-                return NotFound();
-            }
             return Ok($"Company with id:{id} has been updated");
 
         }

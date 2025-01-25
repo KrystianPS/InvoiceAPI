@@ -2,6 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using InvoiceAPI.DtoModels.InvoiceModel;
 using InvoiceAPI.Entities;
+using InvoiceAPI.Exceptions;
 using InvoiceAPI.Models.InvoiceModel;
 using InvoiceAPI.Persistance;
 using Microsoft.EntityFrameworkCore;
@@ -12,11 +13,12 @@ namespace InvoiceAPI.Services
     {
         private readonly InvoiceAPIDbContext _dbContext;
         private readonly IMapper _mapper;
-
-        public InvoiceService(InvoiceAPIDbContext dbContext, IMapper mapper)
+        private readonly ILogger _logger;
+        public InvoiceService(InvoiceAPIDbContext dbContext, IMapper mapper, ILogger logger)
         {
             _dbContext = dbContext;
             _mapper = mapper;
+            _logger = logger;
         }
 
 
@@ -47,7 +49,7 @@ namespace InvoiceAPI.Services
                 .Include(r => r.InvoiceItems)
                 .Where(c => c.ContractorId == id)
                 .ProjectTo<InvoiceDto>(_mapper.ConfigurationProvider)
-                .ToList();
+                .ToList() ?? throw new NotFoundException($"Invoices by contractor Id:{id} not found");
 
             return invoices;
         }
@@ -64,8 +66,7 @@ namespace InvoiceAPI.Services
                 .Include(c => c.Company.Contact)
                 .Include(r => r.InvoiceItems)
                 .Where(c => c.Id == id)
-                .ProjectTo<InvoiceDto>(_mapper.ConfigurationProvider)
-                .FirstOrDefault();
+                .ProjectTo<InvoiceDto>(_mapper.ConfigurationProvider) ?? throw new NotFoundException($"Invoice with Id:{id}not found");
 
 
             var result = _mapper.Map<InvoiceDto>(invoice);
@@ -84,57 +85,24 @@ namespace InvoiceAPI.Services
                 .Include(c => c.Company.Address)
                 .Include(c => c.Company.Contact)
                 .Include(c => c.InvoiceItems)
-                .ToList();
-
-
-
-            if (invoices is null)
-            {
-                return null;
-            }
+                .ToList() ?? throw new NotFoundException($"No invoices found.");
 
             var result = _mapper.Map<List<InvoiceDto>>(invoices);
 
             return result;
         }
-        public async Task<bool> DeleteInvoice(int id)
-        {
-            var invoice = _dbContext
-                .Invoices
-                .FirstOrDefault(p => p.Id == id);
 
-            if (invoice is null) return false;
-
-            _dbContext.Invoices.Remove(invoice);
-            await _dbContext.SaveChangesAsync();
-
-            return true;
-        }
         public async Task<int> CreateInvoice(CreateInvoiceDto createInvoiceDto)
         {
 
 
-            var company = await _dbContext.Companies.FindAsync(createInvoiceDto.CompanyId);
-            if (company == null)
-            {
-                throw new ArgumentException($"Company with ID {createInvoiceDto.CompanyId} not found.");
-            }
+            var company = await _dbContext.Companies.FindAsync(createInvoiceDto.CompanyId) ?? throw new NotFoundException($"Company with ID {createInvoiceDto.CompanyId} not found.");
 
-
-            var contractor = await _dbContext.Contractors.FindAsync(createInvoiceDto.ContractorId);
-            if (contractor == null)
-            {
-                throw new ArgumentException($"Contractor with ID {createInvoiceDto.ContractorId} not found.");
-            }
-
+            var contractor = await _dbContext.Contractors.FindAsync(createInvoiceDto.ContractorId) ?? throw new NotFoundException($"Contractor with ID {createInvoiceDto.ContractorId} not found.");
 
             var invoiceItems = createInvoiceDto.InvoiceItems.Select(itemDto =>
             {
-                var product = _dbContext.Products.Find(itemDto.ProductId);
-                if (product == null)
-                {
-                    throw new ArgumentException($"Product with ID {itemDto.ProductId} not found.");
-                }
+                var product = _dbContext.Products.Find(itemDto.ProductId) ?? throw new NotFoundException($"Product with ID {itemDto.ProductId} not found.");
 
                 var itemPriceNet = product.UnitPriceNet * itemDto.Quantity;
                 var itemVatAmount = itemPriceNet * itemDto.VatRate / 100;
@@ -180,18 +148,12 @@ namespace InvoiceAPI.Services
         }
 
 
-        public async Task<bool> UpdateInvoice(int id, UpdateInvoiceDto updateInvoiceDto)
+        public async Task UpdateInvoice(int id, UpdateInvoiceDto updateInvoiceDto)
         {
             var invoice = _dbContext
                .Invoices
                .Include(c => c.InvoiceItems)
-               .FirstOrDefault(c => c.Id == id);
-
-            if (invoice is null)
-            {
-                return false;
-            }
-
+               .FirstOrDefault(c => c.Id == id) ?? throw new NotFoundException("Product not found");
 
 
             //if not null update data
@@ -201,8 +163,7 @@ namespace InvoiceAPI.Services
             invoice.ContractorId = updateInvoiceDto.ContractorId ?? invoice.ContractorId;
 
 
-
-            //add
+            //add new item and save invoice after each item added
             if (updateInvoiceDto.ItemsToAdd != null && updateInvoiceDto.ItemsToAdd.Any())
             {
                 foreach (var itemToAdd in updateInvoiceDto.ItemsToAdd)
@@ -230,7 +191,6 @@ namespace InvoiceAPI.Services
                     invoice.InvoiceItems.Add(newItem);
                 }
 
-                // Zapisanie zmian po dodaniu nowych pozycji
                 await _dbContext.SaveChangesAsync();
             }
 
@@ -242,31 +202,36 @@ namespace InvoiceAPI.Services
                 await _dbContext.SaveChangesAsync();
             }
 
-
-
+            //sum current total invoice values
             var totalNet = invoice.InvoiceItems.Sum(i => i.ItemPriceNet);
             var totalVat = invoice.InvoiceItems.Sum(i => i.ItemVatAmount);
             var totalGross = totalNet + totalVat;
 
-            // Przypisanie obliczonych wartości do faktury
+            //set current values in invoice
             invoice.TotalNet = totalNet;
             invoice.TotalVatAmount = totalVat;
             invoice.TotalGross = totalGross;
 
 
-
             _dbContext.Invoices.Update(invoice);
             await _dbContext.SaveChangesAsync();
+        }
 
-            return true;
+        public async Task DeleteInvoice(int id)
+        {
+            var invoice = _dbContext
+                .Invoices
+                .FirstOrDefault(p => p.Id == id) ?? throw new NotFoundException($"Invoice with Id:{id} not found.");
 
+            _dbContext.Invoices.Remove(invoice);
+            await _dbContext.SaveChangesAsync();
         }
 
 
 
 
 
-        //additional basic invoice number creation method = to be developed later #todo
+        //additional basic invoice number creation method = to be updated later             #TODO
         public string GenerateInvoiceNumber(int? lastInvoiceNumber = null)
         {
             string month = DateTime.Now.ToString("MM");

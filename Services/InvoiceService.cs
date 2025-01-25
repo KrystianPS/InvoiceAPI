@@ -65,8 +65,9 @@ namespace InvoiceAPI.Services
                 .Include(c => c.Company.Address)
                 .Include(c => c.Company.Contact)
                 .Include(r => r.InvoiceItems)
-                .Where(c => c.Id == id)
-                .ProjectTo<InvoiceDto>(_mapper.ConfigurationProvider) ?? throw new NotFoundException($"Invoice with Id:{id}not found");
+                .FirstOrDefault(c => c.Id == id) ?? throw new NotFoundException($"Invoice with Id:{id} not found");
+            //.ProjectTo<InvoiceDto>(_mapper.ConfigurationProvider) 
+
 
 
             var result = _mapper.Map<InvoiceDto>(invoice);

@@ -7,6 +7,7 @@ namespace InvoiceAPI.Controllers
 {
 
     [Route("/category")]
+    [ApiController]
     public class ProductCategoryController : ControllerBase
     {
 
@@ -33,10 +34,6 @@ namespace InvoiceAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<ProductCategory>> Create([FromBody] CreateProductCategoryDto dto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
 
             var id = await _productCategoryService.CreateProductCategory(dto);
 
@@ -48,10 +45,6 @@ namespace InvoiceAPI.Controllers
         {
             var isDeleted = await _productCategoryService.DeleteProductCategory(id);
 
-            if (!isDeleted)
-            {
-                return NotFound();
-            }
             return Ok($"Product Category with id:{id} deleted");
         }
     }

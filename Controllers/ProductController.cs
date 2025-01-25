@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace InvoiceAPI.Controllers
 {
     [Route("/product")]
+    [ApiController]
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
@@ -37,15 +38,22 @@ namespace InvoiceAPI.Controllers
         public async Task<ActionResult<Product>> Create([FromBody] CreateProductDto dto)
         {
             _logger.LogInformation("Create product query invoked");
-            if (!ModelState.IsValid)
-            {
-                _logger.LogWarning("Dto model is not valid");
-                return BadRequest(ModelState);
-            }
 
             var id = await _productService.CreateProduct(dto);
 
             return Created($"product/{id}", null);
+        }
+
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Update([FromRoute] int id, [FromBody] UpdateProductDto dto)
+        {
+            _logger.LogInformation($"Update product with Id:{id} query invoked")
+
+            await _productService.UpdateProduct(id, dto);
+
+            return Ok($"Product with id:{id} updated");
+
         }
 
         [HttpDelete("{id}")]
@@ -56,23 +64,6 @@ namespace InvoiceAPI.Controllers
 
             return Ok($"Product with id:{id} deleted");
         }
-
-        [HttpPut("{id}")]
-        public async Task<ActionResult> Update([FromRoute] int id, [FromBody] UpdateProductDto dto)
-        {
-            _logger.LogInformation($"Update product with Id:{id} query invoked");
-            if (!ModelState.IsValid)
-            {
-                _logger.LogWarning("Update model provided is not valid");
-                return BadRequest(ModelState);
-            }
-
-            await _productService.UpdateProduct(id, dto);
-
-            return Ok($"Product with id:{id} updated");
-
-        }
-
 
 
     }

@@ -13,8 +13,8 @@ namespace InvoiceAPI.Services
     {
         private readonly InvoiceAPIDbContext _dbContext;
         private readonly IMapper _mapper;
-        private readonly ILogger _logger;
-        public InvoiceService(InvoiceAPIDbContext dbContext, IMapper mapper, ILogger logger)
+        private readonly ILogger<InvoiceService> _logger;
+        public InvoiceService(InvoiceAPIDbContext dbContext, IMapper mapper, ILogger<InvoiceService> logger)
         {
             _dbContext = dbContext;
             _mapper = mapper;

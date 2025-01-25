@@ -7,8 +7,8 @@ namespace InvoiceAPI.Services
     public interface IProductService
     {
         Task<int> CreateProduct(CreateProductDto dto);
-        void UpdateProduct(int id, UpdateProductDto dto);
-        void DeleteProduct(int id);
+        Task UpdateProduct(int id, UpdateProductDto dto);
+        Task DeleteProduct(int id);
         List<ProductDto> GetAll();
         ProductDto GetById(int id);
 

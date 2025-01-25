@@ -28,7 +28,7 @@ namespace InvoiceAPI.Controllers
         [HttpGet("{id}")]
         public ActionResult<List<ProductDto>> GetById(int id)
         {
-            _logger.LogInformation("Get by id:{id} product query invoked", id);
+            _logger.LogInformation($"Get by id:{id} product query invoked");
             var product = _productService.GetById(id);
             return Ok(product);
         }
@@ -49,25 +49,28 @@ namespace InvoiceAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult Delete([FromRoute] int id)
+        public async Task<ActionResult> Delete([FromRoute] int id)
         {
-            _productService.DeleteProduct(id);
+            _logger.LogInformation($"Delete product with Id:{id} query invoked");
+            await _productService.DeleteProduct(id);
 
             return Ok($"Product with id:{id} deleted");
         }
 
         [HttpPut("{id}")]
-        public ActionResult Update([FromRoute] int id, [FromBody] UpdateProductDto dto)
+        public async Task<ActionResult> Update([FromRoute] int id, [FromBody] UpdateProductDto dto)
         {
+            _logger.LogInformation($"Update product with Id:{id} query invoked");
             if (!ModelState.IsValid)
             {
                 _logger.LogWarning("Update model provided is not valid");
                 return BadRequest(ModelState);
             }
 
-            _productService.UpdateProduct(id, dto);
+            await _productService.UpdateProduct(id, dto);
 
             return Ok($"Product with id:{id} updated");
+
         }
 
 

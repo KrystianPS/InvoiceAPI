@@ -24,29 +24,22 @@ namespace InvoiceAPI.Services
 
         public ProductDto GetById(int id)
         {
-            _logger.LogInformation("---Get Product with id:{id} query invoked---", id);
             var product = _dbContext.Products
                 .Include(c => c.ProductCategory)
                 .FirstOrDefault(c => c.Id == id);
 
             if (product is null)
             {
-                throw new NotFoundException("Product not found");
+                throw new NotFoundException($"Product with Id:{id} not found");
             }
-
             var productDto = _mapper.Map<ProductDto>(product);
             return productDto;
         }
 
         public List<ProductDto> GetAll()
         {
-            _logger.LogInformation("---Get All Products query invoked---");
             var products = _dbContext.Products
-                .ToList();
-            if (products is null)
-            {
-                throw new NotFoundException("Products not found");
-            }
+                .ToList() ?? throw new NotFoundException("No products found");
 
             var productsDtos = _mapper.Map<List<ProductDto>>(products);
             return productsDtos;
@@ -54,25 +47,23 @@ namespace InvoiceAPI.Services
 
         public async Task<int> CreateProduct(CreateProductDto dto)
         {
-            _logger.LogInformation("---Create product query invoked---");
             var product = _mapper.Map<Product>(dto);
 
 
             if (!string.IsNullOrEmpty(dto.ProductCategoryName))
             {
-                _logger.LogInformation("---Product Category is null---");
+                _logger.LogInformation("Product Category provided is null");
                 var category = _dbContext.ProductCategories
                     .FirstOrDefault(c => c.Name == dto.ProductCategoryName);
 
                 if (category != null)
                 {
-                    _logger.LogInformation("---Product category table is null---");
                     product.ProductCategoryId = category.Id;
                     product.ProductCategory = category;
                 }
                 else
                 {
-
+                    _logger.LogInformation("Product category table is null");
                     product.ProductCategoryId = null;
                     product.ProductCategory = null;
                 }
@@ -86,31 +77,25 @@ namespace InvoiceAPI.Services
 
             _dbContext.Products.Add(product);
             await _dbContext.SaveChangesAsync();
-            _logger.LogInformation("---Product Created with id:{Id}---", product.Id);
+            _logger.LogInformation($"Product Created with id:{product.Id}");
             return product.Id;
         }
 
-        public void DeleteProduct(int id)
+        public async Task DeleteProduct(int id)
         {
-            _logger.LogInformation("---Delete product with id:{id} invoked---", id);
             var product = _dbContext
                 .Products
-                .FirstOrDefault(p => p.Id == id);
-
-            if (product is null) throw new NotFoundException("Product not found");
+                .FirstOrDefault(p => p.Id == id) ?? throw new NotFoundException($"Product with Id:{id} not found");
 
             _dbContext.Products.Remove(product);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
         }
 
-        public void UpdateProduct(int id, UpdateProductDto dto)
+        public async Task UpdateProduct(int id, UpdateProductDto dto)
         {
-            _logger.LogInformation("---Update product with id:{id} invoked---", id);
             var product = _dbContext
                 .Products
-                .FirstOrDefault(p => p.Id == id);
-
-            if (product is null) throw new NotFoundException("Product not found");
+                .FirstOrDefault(p => p.Id == id) ?? throw new NotFoundException($"Product with Id:{id} not found");
 
             if (dto.UnitPriceNet != product.UnitPriceNet)
             {
@@ -122,7 +107,7 @@ namespace InvoiceAPI.Services
                 product.Description = dto.Description;
             };
 
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
         }
 
     }

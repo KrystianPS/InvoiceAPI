@@ -161,7 +161,7 @@ namespace InvoiceAPI.Services
             invoice.DueDate = updateInvoiceDto.DueDate ?? invoice.DueDate;
             invoice.InvoiceNote = updateInvoiceDto.InvoiceNote ?? invoice.InvoiceNote;
             invoice.ContractorId = updateInvoiceDto.ContractorId ?? invoice.ContractorId;
-
+            _logger.LogInformation($"Invoice with Id:{id} basic data updated");
 
             //add new item and save invoice after each item added
             if (updateInvoiceDto.ItemsToAdd != null && updateInvoiceDto.ItemsToAdd.Any())
@@ -192,6 +192,7 @@ namespace InvoiceAPI.Services
                 }
 
                 await _dbContext.SaveChangesAsync();
+                _logger.LogInformation($"Invoice with Id:{id} items ({updateInvoiceDto.ItemsToAdd.Count()}) added");
             }
 
             //delete item by id 
@@ -200,6 +201,7 @@ namespace InvoiceAPI.Services
                 invoice.InvoiceItems.RemoveAll(i => updateInvoiceDto.ItemsToDelete.Contains(i.Id));
 
                 await _dbContext.SaveChangesAsync();
+                _logger.LogInformation($"Invoice with Id:{id} item deteled");
             }
 
             //sum current total invoice values

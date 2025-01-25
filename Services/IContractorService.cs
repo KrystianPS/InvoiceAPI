@@ -7,8 +7,8 @@ namespace InvoiceAPI.Services
     {
         Task<int> CreateContractor(CreateContractorDto dto);
 
-        bool UpdateContractor(int id, UpdateContractorDto dto);
-        Task<bool> DeleteContractor(int id);
+        void UpdateContractor(int id, UpdateContractorDto dto);
+        void DeleteContractor(int id);
         List<ContractorDto> GetAll();
         ContractorDto GetById(int id);
     }

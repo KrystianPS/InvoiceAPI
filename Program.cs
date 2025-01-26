@@ -10,11 +10,23 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
-    .WriteTo.File("logs/app.log",
-        rollingInterval: RollingInterval.Day,
-        retainedFileCountLimit: 8,
-        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}") // Szablon logów
+    .WriteTo.Logger(lc => lc
+        .Filter.ByIncludingOnly(evt => evt.Properties.ContainsKey("SourceContext") &&
+                                       evt.Properties["SourceContext"].ToString().Contains("ErrorHandlingMiddleware"))
+        .WriteTo.File("logs/errorhandling.log",
+            rollingInterval: RollingInterval.Day,
+            retainedFileCountLimit: 5,
+            outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}"))
+    .WriteTo.Logger(lc => lc
+            .Filter.ByIncludingOnly(evt => evt.Properties.ContainsKey("SourceContext") &&
+                                           evt.Properties["SourceContext"].ToString().Contains("RequestTimeMiddleware"))
+            .WriteTo.File("logs/requesttime.log",
+                rollingInterval: RollingInterval.Day,
+                retainedFileCountLimit: 5,
+                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}"))
     .CreateLogger();
+
+
 builder.Host.UseSerilog();
 
 
@@ -31,6 +43,7 @@ var app = builder.Build();
 app.UseHttpsRedirection();
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
+app.UseMiddleware<RequestTimeMiddleware>();
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>

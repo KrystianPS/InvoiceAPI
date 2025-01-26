@@ -31,6 +31,8 @@ namespace InvoiceAPI.Extensions
             services.AddScoped<IInvoiceService, InvoiceService>();
 
             services.AddScoped<ErrorHandlingMiddleware>();
+            services.AddScoped<RequestTimeMiddleware>();
+
 
             services.AddSwaggerGen();
         }

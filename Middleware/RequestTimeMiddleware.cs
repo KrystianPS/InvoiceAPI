@@ -21,9 +21,9 @@ namespace InvoiceAPI.Middleware
             stopwatch.Stop();
             var elapsedMiliseconds = stopwatch.ElapsedMilliseconds;
 
-            var message =
-                $"Request [{context.Request.Method}] at {context.Request.Path}] took {elapsedMiliseconds} ms";
-            _logger.LogWarning(message);
+                var message =
+                    $"Request [{context.Request.Method}] at {context.Request.Path}] took {elapsedMiliseconds} ms";
+                _logger.LogWarning(message);
 
 
 

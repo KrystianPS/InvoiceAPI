@@ -1,6 +1,8 @@
 using InvoiceAPI.Extensions;
 using InvoiceAPI.Middleware;
+using Microsoft.AspNetCore.Identity;
 using Serilog;
+using System.Security.Claims;
 
 
 
@@ -32,6 +34,7 @@ builder.Host.UseSerilog();
 
 builder.Services.AddLogging();
 
+
 builder.Services.AddControllers();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddSwaggerGen();
@@ -41,6 +44,8 @@ var app = builder.Build();
 
 
 app.UseHttpsRedirection();
+
+app.MapIdentityApi<IdentityUser>();
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
 app.UseMiddleware<RequestTimeMiddleware>();
@@ -53,6 +58,9 @@ app.UseSwaggerUI(c =>
 });
 
 app.MapControllers();
+
+//test identity
+app.MapGet("/test", (ClaimsPrincipal user) => $"Hello {user.Identity!.Name}").RequireAuthorization();
 
 app.Run();
 

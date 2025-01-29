@@ -3,7 +3,10 @@ using InvoiceAPI.Persistance;
 using InvoiceAPI.Seeders;
 using InvoiceAPI.Seeders.EntitySeeders;
 using InvoiceAPI.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+
+
 
 namespace InvoiceAPI.Extensions
 {
@@ -15,13 +18,25 @@ namespace InvoiceAPI.Extensions
                 configuration.GetConnectionString("Dev")));
 
 
+
+            services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+                            .AddEntityFrameworkStores<InvoiceAPIDbContext>()
+                            .AddApiEndpoints();
+
+            services.AddAuthentication().AddBearerToken(IdentityConstants.BearerScheme);
+            services.AddAuthorizationBuilder();
+
+
+
             services.AddScoped<DatabaseSeeder>();
             services.AddScoped<VatRateSeeder>();
             services.AddScoped<ContractorSeeder>();
             services.AddScoped<CompanySeeder>();
 
 
+
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 
 
             services.AddScoped<ICompanyService, CompanyService>();
@@ -32,7 +47,6 @@ namespace InvoiceAPI.Extensions
 
             services.AddScoped<ErrorHandlingMiddleware>();
             services.AddScoped<RequestTimeMiddleware>();
-
 
             services.AddSwaggerGen();
         }

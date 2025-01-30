@@ -18,13 +18,11 @@ namespace InvoiceAPI.Extensions
                 configuration.GetConnectionString("Dev")));
 
 
+            services.AddAuthorization();
+            services.AddIdentityApiEndpoints<IdentityUser>()
+                .AddEntityFrameworkStores<InvoiceAPIDbContext>();
 
-            services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
-                            .AddEntityFrameworkStores<InvoiceAPIDbContext>()
-                            .AddApiEndpoints();
 
-            services.AddAuthentication().AddBearerToken(IdentityConstants.BearerScheme);
-            services.AddAuthorizationBuilder();
 
 
 

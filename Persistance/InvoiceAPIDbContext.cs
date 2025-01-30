@@ -1,9 +1,11 @@
 ﻿using InvoiceAPI.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace InvoiceAPI.Persistance
 {
-    public class InvoiceAPIDbContext : DbContext
+    public class InvoiceAPIDbContext : IdentityDbContext
     {
 
         public InvoiceAPIDbContext(DbContextOptions<InvoiceAPIDbContext> options) : base(options)
@@ -30,7 +32,21 @@ namespace InvoiceAPI.Persistance
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(this.GetType().Assembly);
+
+
+            modelBuilder.Entity<IdentityUserLogin<string>>()
+                 .HasKey(l => new { l.LoginProvider, l.ProviderKey });
+
+            modelBuilder.Entity<IdentityUserRole<string>>()
+                .HasKey(r => new { r.UserId, r.RoleId });
+
+            modelBuilder.Entity<IdentityUserToken<string>>()
+                .HasKey(t => new { t.UserId, t.LoginProvider, t.Name });
+
+
         }
+
+
 
     }
 }

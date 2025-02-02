@@ -1,6 +1,7 @@
 ﻿using InvoiceAPI.DtoModels.CompanyModel;
 using InvoiceAPI.Models.CompanyModel;
 using InvoiceAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InvoiceAPI.Controllers
@@ -30,6 +31,7 @@ namespace InvoiceAPI.Controllers
 
 
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<CompanyDto> Get([FromRoute] int id)
         {
             var company = _companyService.GetById(id);

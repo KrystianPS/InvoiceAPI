@@ -2,7 +2,6 @@ using InvoiceAPI.Extensions;
 using InvoiceAPI.Middleware;
 using Microsoft.AspNetCore.Identity;
 using Serilog;
-using System.Security.Claims;
 
 
 
@@ -56,11 +55,10 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Invoice API");
     c.RoutePrefix = "";
 });
+app.UseAuthorization();
 
 app.MapControllers();
 
-//test identity
-app.MapGet("/test", (ClaimsPrincipal user) => $"Hello {user.Identity!.Name}").RequireAuthorization();
 
 app.Run();
 

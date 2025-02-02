@@ -18,9 +18,12 @@ namespace InvoiceAPI.Extensions
                 configuration.GetConnectionString("Dev")));
 
 
-            services.AddAuthorization();
+            services.AddAuthorizationBuilder();
             services.AddIdentityApiEndpoints<IdentityUser>()
                 .AddEntityFrameworkStores<InvoiceAPIDbContext>();
+
+            services.AddAuthentication().AddBearerToken(IdentityConstants.BearerScheme);
+
 
 
 

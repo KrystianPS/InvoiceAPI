@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="DtoModels\**" />
+    <Content Remove="DtoModels\**" />
+    <EmbeddedResource Remove="DtoModels\**" />
+    <None Remove="DtoModels\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.12" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
@@ -29,6 +36,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\InvoiceAPI.Application\InvoiceAPI.Application.csproj" />
+    <ProjectReference Include="..\InvoiceAPI.Domain\InvoiceAPI.Domain.csproj" />
   </ItemGroup>
 
 </Project>

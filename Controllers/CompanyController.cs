@@ -1,6 +1,6 @@
-﻿using InvoiceAPI.DtoModels.CompanyModel;
+﻿using InvoiceAPI.Application.Services.Repositories;
+using InvoiceAPI.DtoModels.CompanyModel;
 using InvoiceAPI.Models.CompanyModel;
-using InvoiceAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InvoiceAPI.Controllers

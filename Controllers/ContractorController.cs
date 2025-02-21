@@ -1,6 +1,6 @@
-﻿using InvoiceAPI.DtoModels.ContractorModel;
+﻿using InvoiceAPI.Application.Services.Repositories;
+using InvoiceAPI.DtoModels.ContractorModel;
 using InvoiceAPI.Models.ContractorModel;
-using InvoiceAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InvoiceAPI.Controllers
@@ -29,7 +29,7 @@ namespace InvoiceAPI.Controllers
         public ActionResult<ContractorDto> GetById([FromRoute] int id)
         {
             _logger.LogInformation($"Get constractor with Id:{id} query invoked");
-            var contractor = _contractorService.GetById(id);
+            var contractor = _contractorService.GetByIdAsync(id);
             return Ok(contractor);
         }
 

@@ -1,8 +1,8 @@
-﻿using InvoiceAPI.DtoModels.ProductModel;
+﻿using InvoiceAPI.Application.Services.Repositories;
+using InvoiceAPI.DtoModels.ProductModel;
 using InvoiceAPI.Entities;
 using InvoiceAPI.Models;
 using InvoiceAPI.Models.ProductModel;
-using InvoiceAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InvoiceAPI.Controllers

@@ -1,6 +1,6 @@
-﻿using InvoiceAPI.Entities;
+﻿using InvoiceAPI.Application.Services.Repositories;
+using InvoiceAPI.Entities;
 using InvoiceAPI.Models.ProductCategoryModel;
-using InvoiceAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InvoiceAPI.Controllers
